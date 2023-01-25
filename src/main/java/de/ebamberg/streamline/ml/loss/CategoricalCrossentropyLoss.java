@@ -1,6 +1,15 @@
 package de.ebamberg.streamline.ml.loss;
 
-public class CategoricalCrossentropyLoss {
+import java.util.function.BiFunction;
+
+import ai.djl.ndarray.NDArray;
+
+public class CategoricalCrossentropyLoss implements BiFunction<NDArray, NDArray, NDArray>{
+
+	public NDArray apply(NDArray y_pred, NDArray y_real) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 	 /**
