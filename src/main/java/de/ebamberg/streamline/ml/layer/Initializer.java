@@ -2,6 +2,7 @@ package de.ebamberg.streamline.ml.layer;
 
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDManager;
+import ai.djl.ndarray.types.DataType;
 import ai.djl.ndarray.types.Shape;
 
 @FunctionalInterface
@@ -17,7 +18,7 @@ public interface Initializer {
 
 			@Override
 			public NDArray init(NDManager manager,Shape shape) {
-				return manager.randomUniform(0.01f, 1f, shape); 
+				return manager.randomNormal(0.01f, 1.0f, shape,DataType.FLOAT32); 
 			}
 			
 		};

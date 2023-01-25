@@ -21,6 +21,7 @@ public class DenseLayer implements Layer {
 	
 	@Override
 	public NDArray forward(NDArray input) {
+		// System.out.println(weights);
 		return input.dot(weights).add(biases);
 	}
 
