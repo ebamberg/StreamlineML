@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.ebamberg.ml</groupId>
+	<artifactId>streamlineML</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>StreamLineML</name>
+
+	<properties>
+		<maven.compiler.target>18</maven.compiler.target>
+		<maven.compiler.source>18</maven.compiler.source>
+		<djl.version>0.19.0</djl.version>
+	</properties>
+
+  <dependencies>
+  	<dependency>
+  		<groupId>ai.djl</groupId>
+  		<artifactId>api</artifactId>
+  		<version>${djl.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>ai.djl.mxnet</groupId>
+  		<artifactId>mxnet-engine</artifactId>
+  		<version>${djl.version}</version>
+  	</dependency>  	
+  	<!-- dependency>
+  		<groupId>ai.djl.tensorflow</groupId>
+  		<artifactId>tensorflow-engine</artifactId>
+  		<version>${djl.version}</version>
+  	</dependency -->  	
+
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>[5.4.0,)</version>
+        <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
