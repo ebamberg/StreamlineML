@@ -18,9 +18,9 @@ public class SimpleClassification {
 		try (var manager=NDManager.newBaseManager()) {
 			var x= manager.create(inputData);
 			
-			var layer1=new DenseLayer(manager, x.getShape());
+			var layer1=new DenseLayer(manager, x.getShape(),5);
 			var activation1=new ReLUActivation();
-			var layer2=new DenseLayer(manager, new Shape(1,5));
+			var layer2=new DenseLayer(manager, new Shape(1,5),3);
 			var activation2=new SoftMaxActivation();
 			
 			var output1=layer1.forward(x);

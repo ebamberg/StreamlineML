@@ -13,7 +13,7 @@ public class DenseLayer implements Layer {
 	protected NDArray weights;
 	protected NDArray biases;
 	
-	public DenseLayer(NDManager manager,Shape shape) {
+	public DenseLayer(NDManager manager,Shape shape, int neurons) {
 		long inputSize=shape.get(1);
 		weights=initializer.init(manager, inputSize,numNeurons);
 		biases=manager.zeros(new Shape(1,numNeurons),DataType.FLOAT32);
