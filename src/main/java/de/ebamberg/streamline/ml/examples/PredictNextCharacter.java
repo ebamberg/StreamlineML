@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ai.djl.ndarray.NDArray;
+import ai.djl.ndarray.types.Shape;
 import de.ebamberg.streamline.ml.layer.rnn.RNNLayer;
 import de.ebamberg.streamline.ml.text.CharacterBasedDictionary;
 import de.ebamberg.streamline.ml.text.InputEncoder;
@@ -26,8 +27,8 @@ public class PredictNextCharacter {
 			
 			System.out.println("**** One Hot encoded input data ****");
 			onehotencoded.forEach(arr->System.out.println(Arrays.toString(arr.toFloatArray())));
-			var layer1=new RNNLayer();
-			layer1.initialize(encoder.getManager(), null);
+			var layer1=new RNNLayer(encoder.getManager(),new Shape(1,dictionary.size()));
+			
 		}
 	}
 
