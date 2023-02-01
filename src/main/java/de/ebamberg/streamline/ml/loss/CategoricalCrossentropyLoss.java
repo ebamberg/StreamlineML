@@ -7,7 +7,13 @@ import ai.djl.ndarray.NDArray;
 public class CategoricalCrossentropyLoss implements BiFunction<NDArray, NDArray, NDArray>{
 
 	public NDArray apply(NDArray y_pred, NDArray y_real) {
-		// TODO Auto-generated method stub
+		var samples = y_pred.size(0);
+		var y_pred_clipped = y_pred.clip(1e-7f, 1 - 1e-7f);		// to avoid log(0) =0/INF problem
+		if (y_pred_clipped.getShape().dimension()==1) {  // categorical labels
+			
+		} else {		// one-hot encoded
+			
+		}
 		return null;
 	}
 
