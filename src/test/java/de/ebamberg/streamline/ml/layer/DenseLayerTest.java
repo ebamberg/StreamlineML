@@ -9,7 +9,6 @@ public class DenseLayerTest {
 	@Test
 	public void testDense() {
 		var inputData = new float[][] { { 1f, 2f, 3f, 2.5f }, { 2f, 5f, -1f, 2f }, { -1.5f, 2.7f, 3.3f, -0.8f } };
-		var categories = new float[] { 0f, 1f, 1f }; // categories
 
 		try (var manager = NDManager.newBaseManager()) {
 			var x = manager.create(inputData);
