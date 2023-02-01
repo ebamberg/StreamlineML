@@ -11,29 +11,29 @@
 		<djl.version>0.19.0</djl.version>
 	</properties>
 
-  <dependencies>
-  	<dependency>
-  		<groupId>ai.djl</groupId>
-  		<artifactId>api</artifactId>
-  		<version>${djl.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>ai.djl.mxnet</groupId>
-  		<artifactId>mxnet-engine</artifactId>
-  		<version>${djl.version}</version>
-  	</dependency>  	
-  	<!-- dependency>
+	<dependencies>
+		<dependency>
+			<groupId>ai.djl</groupId>
+			<artifactId>api</artifactId>
+			<version>${djl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ai.djl.mxnet</groupId>
+			<artifactId>mxnet-engine</artifactId>
+			<version>${djl.version}</version>
+		</dependency>
+		<!-- dependency>
   		<groupId>ai.djl.tensorflow</groupId>
   		<artifactId>tensorflow-engine</artifactId>
   		<version>${djl.version}</version>
-  	</dependency -->  	
+  	</dependency -->
 
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>[5.4.0,)</version>
-        <scope>test</scope>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>[5.4.0,)</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 </project>
