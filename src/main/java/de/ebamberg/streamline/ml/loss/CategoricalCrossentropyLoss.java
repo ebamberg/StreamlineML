@@ -21,7 +21,8 @@ public class CategoricalCrossentropyLoss implements BiFunction<NDArray, NDArray,
 			System.out.println("one-hot-encoded");
 			confidences = y_pred_clipped.mul(y_real).sum(new int[]{1});
 		}
-		return confidences;
+		var log_likelihoods = confidences.log().negi();
+		return log_likelihoods.mean();
 	}
 
 	private void checkPreconditions(NDArray y_pred, NDArray y_real) {
