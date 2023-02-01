@@ -8,22 +8,26 @@ import ai.djl.ndarray.index.NDIndex;
 public class CategoricalCrossentropyLoss implements BiFunction<NDArray, NDArray, NDArray>{
 
 	public NDArray apply(NDArray y_pred, NDArray y_real) {
+		checkPreconditions(y_pred, y_real);
 		var samples = y_pred.size(0);
 		var y_pred_clipped = y_pred.clip(1e-7f, 1 - 1e-7f);		// to avoid log(0) =0/INF problem
 		NDArray confidences;
 		if (y_real.getShape().dimension()==1) {  // categorical labels
-			if (y_real.size(0)!=y_pred.size(0)) {
-				throw new IllegalArgumentException(String.format("number of labels [%d] doesn't match number of samples [%d] in the predicted input.",y_real.size(0),y_pred.size(0)));
-			}
 			var index=new NDIndex()
 						.addAllDim(1)
 						.addPickDim(y_real);
 			confidences=y_pred.get(index);
 		} else {		// one-hot encoded
 			System.out.println("one-hot-encoded");
-			confidences = y_pred.mul(y_real).sum(new int[]{1});
+			confidences = y_pred_clipped.mul(y_real).sum(new int[]{1});
 		}
 		return confidences;
+	}
+
+	private void checkPreconditions(NDArray y_pred, NDArray y_real) {
+		if (y_real.size(0)!=y_pred.size(0)) {
+			throw new IllegalArgumentException(String.format("number of labels [%d] doesn't match number of samples [%d] in the predicted input.",y_real.size(0),y_pred.size(0)));
+		}
 	}
 
 	
