@@ -7,5 +7,10 @@ public interface Dictionary<T> {
 	T elementOf(int index);
 
 	int size();
+	
+	default void show() {
+		System.out.print(String.format("Dictionary: %d elements",this.size()));
+	};
+
 
 }

@@ -22,6 +22,18 @@ public class Record {
 			values.add(value);
 	}
 
+	public Object getValue(Feature feature) {
+		return getValue(feature.getName());
+	}
+	
+	public Object getValue(String featureName) {
+		int idx=scheme.indexOf(featureName);
+		if (idx<0) 
+			return null;
+		return values.get(idx);
+	}
+
+
 
 	@Override
 	public String toString() {

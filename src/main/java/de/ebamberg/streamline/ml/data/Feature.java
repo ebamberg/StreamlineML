@@ -13,11 +13,14 @@ public class Feature<R> {
 	private String name;
 	
 	private R role;
+	
+	private boolean isCollection;
 		
 	public Feature(String name, R role) {
 		super();
 		this.name  = name;
 		this.role	= role;
+		isCollection=false;
 	}
 
 

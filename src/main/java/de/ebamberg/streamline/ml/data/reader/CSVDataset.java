@@ -67,7 +67,7 @@ public class CSVDataset {
 		}
 		return StreamSupport.stream(parser.spliterator(), false)
 				.map(csvrecord-> {
-					var rec=new Record (schema);
+					var rec=new Record (currentSchema);
 				
 					currentSchema.forEach( f-> {
 						
