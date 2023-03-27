@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -94,9 +95,13 @@ public class CSVDataset {
 
 	
 	
-	public static CSVDataset fromInputStream(InputStream inputstream) {
+	public static CSVDataset fromURL(URL url) {
 		return new CSVDataset( () -> {
-			return new InputStreamReader(inputstream);
+			try {
+				return new InputStreamReader(url.openStream());
+			} catch (IOException e) {
+				throw new IllegalArgumentException(e.getMessage(),e);
+			}
 		}) ;
 		
 	}

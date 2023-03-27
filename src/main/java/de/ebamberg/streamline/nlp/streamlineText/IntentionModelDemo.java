@@ -8,7 +8,8 @@ public class IntentionModelDemo {
 
 	public static void main(String[] args) throws Exception {
 		
-		var dataset=CSVDataset.fromInputStream(IntentionModelDemo.class.getResourceAsStream("/intentions.csv"));
+		var dataset=CSVDataset.fromURL(IntentionModelDemo.class.getResource("/intentions.csv"));
+		dataset.stream().forEach(System.out::println);
 		dataset.stream().forEach(System.out::println);
 	}
 	
