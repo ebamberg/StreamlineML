@@ -1,6 +1,5 @@
 package de.ebamberg.streamline.nlp.streamlineText;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import de.ebamberg.streamline.ml.data.reader.CSVDataset;

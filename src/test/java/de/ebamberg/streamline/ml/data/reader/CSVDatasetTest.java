@@ -4,12 +4,9 @@ import static java.util.stream.Collectors.counting;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.junit.jupiter.api.Test;
-
-import de.ebamberg.streamline.nlp.streamlineText.IntentionModelDemo;
 
 public class CSVDatasetTest {
 
