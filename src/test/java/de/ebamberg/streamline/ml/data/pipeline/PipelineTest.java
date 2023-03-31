@@ -70,7 +70,11 @@ public class PipelineTest {
 
 		var p=Pipeline.fromProducer(producer)
 						.map(s-> {return Integer.valueOf(s);} )
-						.log("this is a log string");
+						.log("this is a log string")
+						.log("logging the current value {}")
+						.log("logging some parameters: {},{}","hello","world")
+						.log("logging parameters and current value: {}->{}","value is");
+		
 						
 		producer.start();
 		

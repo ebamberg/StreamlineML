@@ -1,12 +1,18 @@
 package de.ebamberg.streamline.ml.data.pipeline;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Pipeline<I, O>  {
 
+	private static final Logger log=LoggerFactory.getLogger("Pipeline");
+	
 	private Stage<I,O> stage;
 	
 	private List<Stage<O,?>> nextStages;
@@ -69,13 +75,18 @@ public class Pipeline<I, O>  {
 		var nextStage=new Stage<O,O>() {
 			@Override
 			public O forward(O input) {
-				System.out.println(String.format(logPattern, parameters));
+				if (log.isInfoEnabled()) {
+					Object[] combined = Arrays.copyOf(parameters, parameters.length + 1);
+					combined[parameters.length]=input;
+					log.info(logPattern, combined );
+				}
 				return input;
 			}
 		};
 		return new Pipeline<>(nextStage,this);	
 	}
 	
+
 
 
 	void forward(Object element) {
