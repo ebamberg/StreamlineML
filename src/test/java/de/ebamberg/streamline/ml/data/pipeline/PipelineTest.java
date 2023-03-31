@@ -63,4 +63,17 @@ public class PipelineTest {
 		
 	}
 	
+	@Test
+	public void testPipelineLoggingStage() {
+		
+		var producer=new ArrayDataProducer<>(new String[] {"123","456","789"});
+
+		var p=Pipeline.fromProducer(producer)
+						.map(s-> {return Integer.valueOf(s);} )
+						.log("this is a log string");
+						
+		producer.start();
+		
+	}
+	
 }

@@ -62,8 +62,18 @@ public class Pipeline<I, O>  {
 				return input;
 			}
 		};
-		return new Pipeline<>(nextStage,this);
-		
+		return new Pipeline<>(nextStage,this);	
+	}
+	
+	public Pipeline<O,O> log(String logPattern, Object...  parameters) {
+		var nextStage=new Stage<O,O>() {
+			@Override
+			public O forward(O input) {
+				System.out.println(String.format(logPattern, parameters));
+				return input;
+			}
+		};
+		return new Pipeline<>(nextStage,this);	
 	}
 	
 
