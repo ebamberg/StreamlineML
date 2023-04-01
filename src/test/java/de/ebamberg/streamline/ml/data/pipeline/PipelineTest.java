@@ -62,7 +62,9 @@ public class PipelineTest {
 //		var producer=new ArrayDataProducer<>(new String[] {"12,34,56","78,90","00"});
 //		var counter=new AtomicInteger();
 //		var p=Pipeline.fromProducer(producer)
-//						.flatMap(s-> { return Arrays.asList(s.split(",")); } )
+//						.flatMap(s-> { 
+//							return Arrays.asList(s.split(",")); 
+//						} )
 //						.then(i->counter.incrementAndGet());
 //						
 //		producer.start();

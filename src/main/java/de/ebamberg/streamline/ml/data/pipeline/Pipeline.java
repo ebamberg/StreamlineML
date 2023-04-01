@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,12 @@ public class Pipeline<I, O>  {
 	private List<Stage<O,?>> nextStages;
 	
 	private Stage<Object,?> initialStage;
+	private Producer<?> firstProducer;
 	
 	protected Pipeline( Stage<I, O> newStage,Pipeline<?,I> parent) {
 		super();
+		clonePrivateState(parent);
 		
-		this.initialStage = parent.initialStage;
 		this.nextStages=new ArrayList<Stage<O, ?>>();
 		
 		this.stage = input -> { 
@@ -35,10 +37,15 @@ public class Pipeline<I, O>  {
 		parent.nextStages.add(this.stage);
 	}
 
+	private void clonePrivateState(Pipeline<?, I> parent) {
+		this.initialStage = parent.initialStage;
+		this.firstProducer = parent.firstProducer;
+	}
+
 	protected Pipeline( IterableStage<I, Iterator<O>> newStage,Pipeline<?,I> parent) {
 		super();
+		clonePrivateState(parent);
 		
-		this.initialStage = parent.initialStage;
 		this.nextStages=new ArrayList<Stage<O, ?>>();
 		
 		this.stage = input -> { 
@@ -56,6 +63,7 @@ public class Pipeline<I, O>  {
 	
 	protected Pipeline(Producer<?> producer) {
 		producer.attach((Pipeline<?, ?>) this);
+		firstProducer=producer;
 		this.stage=input->{
 			nextStages.forEach(st-> st.forward((O)input));
 			return (O)input;
@@ -69,6 +77,12 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(producer);
 	}
 
+	public static <K> Pipeline<K,K> fromStream(Stream<K> inputStream) {
+		return new Pipeline<>(new Producer.StreamProducer(inputStream));
+	}
+
+	
+	
 	public <K> Pipeline<O,K> map(Function<O,K> mapFunction) {
 		var nextStage=new Stage<O,K>() {
 			@Override
@@ -90,7 +104,7 @@ public class Pipeline<I, O>  {
 		
 		return new Pipeline<>(nextStage,this);
 	}
-
+	
 	
 	
 	public Pipeline<O,O> then(Consumer<O> consumer) {
@@ -138,6 +152,13 @@ public class Pipeline<I, O>  {
 		if (initialStage!=null) {
 			initialStage.forward(element);
 		}
+	}
+
+	public Pipeline<I,O> execute() {
+		if (firstProducer!=null) {
+			firstProducer.start();
+		}
+		return this;
 	}
 
 	
