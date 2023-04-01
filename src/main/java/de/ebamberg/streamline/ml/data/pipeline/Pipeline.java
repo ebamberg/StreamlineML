@@ -2,6 +2,7 @@ package de.ebamberg.streamline.ml.data.pipeline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -33,6 +34,25 @@ public class Pipeline<I, O>  {
 		
 		parent.nextStages.add(this.stage);
 	}
+
+	protected Pipeline( IterableStage<I, Iterator<O>> newStage,Pipeline<?,I> parent) {
+		super();
+		
+		this.initialStage = parent.initialStage;
+		this.nextStages=new ArrayList<Stage<O, ?>>();
+		
+		this.stage = input -> { 
+				var iterator=newStage.forward (input);
+				iterator.forEachRemaining( singleElement-> {
+					nextStages.forEach(st->st.forward(singleElement));
+				});
+				
+				return null;
+		};
+		
+		parent.nextStages.add(this.stage);
+	}
+	
 	
 	protected Pipeline(Producer<?> producer) {
 		producer.attach((Pipeline<?, ?>) this);
@@ -59,6 +79,19 @@ public class Pipeline<I, O>  {
 		
 		return new Pipeline<>(nextStage,this);
 	}
+
+	public <K> Pipeline<O,K> flatMap(Function<O,Iterator<K>> mapFunction) {
+		var nextStage=new IterableStage<O,Iterator<K>>() {
+			@Override
+			public Iterator<K> forward(O input) {
+				return mapFunction.apply(input);
+			}
+		};
+		
+		return new Pipeline<>(nextStage,this);
+	}
+
+	
 	
 	public Pipeline<O,O> then(Consumer<O> consumer) {
 		var nextStage=new Stage<O,O>() {
@@ -85,7 +118,19 @@ public class Pipeline<I, O>  {
 		};
 		return new Pipeline<>(nextStage,this);	
 	}
-	
+
+	public Pipeline<O,O> log() {
+		var nextStage=new Stage<O,O>() {
+			@Override
+			public O forward(O input) {
+				if (log.isInfoEnabled()) {
+					log.info("pipeline stage: {}", input );
+				}
+				return input;
+			}
+		};
+		return new Pipeline<>(nextStage,this);	
+	}
 
 
 
@@ -94,5 +139,6 @@ public class Pipeline<I, O>  {
 			initialStage.forward(element);
 		}
 	}
+
 	
 }
