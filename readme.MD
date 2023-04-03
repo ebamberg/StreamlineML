@@ -20,6 +20,19 @@ StreamlineML uses an easy to learn and easy to read
 
 we can read a csv file for intention classification and build a dictionary for the intent column
 
+
+
+~~~
+		var dataset=CSVDataset
+					.fromResource("/intentions.csv")
+					.read()
+					.categorize("intent")
+					.log()
+					.execute();
+~~~	
+
+input data
+
 |intent   |sample                   |
 |---------|-------------------------|
 |greeting |hello                    |
@@ -33,17 +46,6 @@ we can read a csv file for intention classification and build a dictionary for t
 |playmusic|play music               |
 |playmusic|play a song              |
 |playmusic|play a tune              |
-
-
-~~~
-		var dataset=CSVDataset
-					.fromResource("/intentions.csv")
-					.read()
-					.categorize("intent")
-					.log()
-					.execute();
-~~~	
-
 
 
 					
