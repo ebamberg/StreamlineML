@@ -18,13 +18,32 @@ StreamlineML uses an easy to learn and easy to read
 
 ## building catalog feature
 
+we can read a csv file for intention classification and build a dictionary for the intent column
+
+|intent   |sample                   |
+|---------|-------------------------|
+|greeting |hello                    |
+|greeting |Good morning             |
+|greeting |Good afternoon           |
+|greeting |Hi                       |
+|ls       |list content of directory|
+|ls       |list folder              |
+|ls       |list current folder      |
+|ls       |let's see what we have   |
+|playmusic|play music               |
+|playmusic|play a song              |
+|playmusic|play a tune              |
+
+
 ~~~
 		var dataset=CSVDataset
 					.fromResource("/intentions.csv")
 					.read()
-					.log()
 					.categorize("intent")
 					.log()
 					.execute();
 ~~~	
+
+
+
 					
