@@ -16,14 +16,14 @@ public class Feature<R> {
 	
 	private boolean isCollection;
 	
-	private boolean isCategory;
+	private boolean categorical;
 		
 	public Feature(String name, R role) {
 		super();
 		this.name  = name;
 		this.role	= role;
 		isCollection=false;
-		isCategory=false;
+		categorical=false;
 	}
 	
 	protected Feature(Feature<R> cloneFrom) {
@@ -31,7 +31,7 @@ public class Feature<R> {
 		this.name  = cloneFrom.name;
 		this.role	= cloneFrom.role;
 		isCollection=cloneFrom.isCollection;
-		isCategory=cloneFrom.isCategory;
+		categorical=cloneFrom.categorical;
 	}
 	
 
@@ -58,10 +58,17 @@ public class Feature<R> {
 
 
 
-	public Feature<R> setCategorize(boolean b) {
+	public Feature<R> setCategorical(boolean b) {
 		var nf=new Feature<R>(this);
-		nf.isCategory=true;
+		nf.categorical=true;
 		return nf;
+	}
+
+	/**
+	 * @return the categorical
+	 */
+	public boolean isCategorical() {
+		return categorical;
 	}
 	
 	

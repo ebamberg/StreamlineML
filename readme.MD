@@ -18,7 +18,7 @@ StreamlineML uses an easy to learn and easy to read
 
 ## building catalog feature
 
-we can read a csv file for intention classification and build a dictionary for the intent column
+we can read a csv file for intention classification and convert the feature intent into a categorical feature. A dictionary for the categories is build. 
 
 
 
