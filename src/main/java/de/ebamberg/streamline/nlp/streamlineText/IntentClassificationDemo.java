@@ -11,7 +11,7 @@ public class IntentClassificationDemo {
 	public static void main(String[] args) throws Exception {
 		
 		var dataset=CSVDataset
-					.fromURL(IntentClassificationDemo.class.getResource("/intentions.csv"));
+					.fromResource("/intentions.csv");
 		
 		var p=dataset
 				.read()

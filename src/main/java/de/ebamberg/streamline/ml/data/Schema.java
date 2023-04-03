@@ -48,7 +48,7 @@ public class Schema {
 	 * 
 	 * @param schema
 	 */
-	public Schema(Schema schema) {
+	protected Schema(Schema schema) {
 		this.names=new ArrayList<>(schema.names);
 		this.features=new HashMap<>(schema.features);
 		this.nameToIndexMap=new HashMap<>(schema.nameToIndexMap);
@@ -95,6 +95,14 @@ public class Schema {
 	
 	public void forEach (Consumer<Feature<?>> consumer) {
 		names.stream().map(n->features.get(n)).forEach(consumer);
+	}
+
+
+	public Schema categorize(String featureName) {
+		var newSchema= new Schema(this);
+		var f=newSchema.features.get(featureName);
+		newSchema.features.put(featureName, f.setCategorize(true) );
+		return newSchema;
 	}
 	
 }

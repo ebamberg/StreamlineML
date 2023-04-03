@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+import de.ebamberg.streamline.ml.data.text.Dictionary;
+
 public class StreamDictionary<T> implements Dictionary<T> {
 
 	protected List<T> dictionary;

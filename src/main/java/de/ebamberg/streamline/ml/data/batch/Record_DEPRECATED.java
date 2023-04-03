@@ -1,11 +1,11 @@
 package de.ebamberg.streamline.ml.data.batch;
 
-public class Record<T,U> {
+public class Record_DEPRECATED<T,U> {
 
 	private U data;
 	private T labels;
 	
-	public Record(U data, T labels) {
+	public Record_DEPRECATED(U data, T labels) {
 		super();
 		this.data = data;
 		this.labels = labels;

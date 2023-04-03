@@ -131,4 +131,8 @@ public class CSVDataset implements DataReader <Record> {
 		
 	}
 	
+	public static CSVDataset fromResource(String resourcePath) {
+		return fromURL(CSVDataset.class.getResource(resourcePath));
+	}
+	
 }

@@ -6,14 +6,14 @@ import org.apache.commons.compress.utils.Lists;
 
 public class Record {
 
-	private Schema scheme;
+	private Schema schema;
 	private List<Object> values;
 
 	
 	
-	public Record(Schema scheme) {
+	public Record(Schema schema) {
 		super();
-		this.scheme = scheme;
+		this.schema = schema;
 		this.values=Lists.newArrayList();
 	}
 
@@ -27,7 +27,7 @@ public class Record {
 	}
 	
 	public Object getValue(String featureName) {
-		int idx=scheme.indexOf(featureName);
+		int idx=schema.indexOf(featureName);
 		if (idx<0) 
 			return null;
 		return values.get(idx);
@@ -50,6 +50,20 @@ public class Record {
 								sb.append("|");
 							});
 		return sb.toString();
+	}
+
+
+	public Schema getSchema() {
+		return schema;
+	}
+
+
+
+	/**
+	 * @param scheme the scheme to set
+	 */
+	public void setSchema(Schema scheme) {
+		this.schema = scheme;
 	}
 	
 	

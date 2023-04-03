@@ -12,6 +12,11 @@ import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.ebamberg.streamline.ml.data.Record;
+import de.ebamberg.streamline.ml.data.Schema;
+import de.ebamberg.streamline.ml.data.text.Dictionary;
+import de.ebamberg.streamline.ml.data.text.GenericDictionary;
+
 public class Pipeline<I, O>  {
 
 	private static final Logger log=LoggerFactory.getLogger("Pipeline");
@@ -60,7 +65,7 @@ public class Pipeline<I, O>  {
 		
 		parent.nextStages.add(this.stage);
 	}
-	
+
 	
 	protected Pipeline(Producer<?> producer) {
 		producer.attach((Pipeline<?, ?>) this);
@@ -84,6 +89,19 @@ public class Pipeline<I, O>  {
 
 	public static <K> Pipeline<K,K> from(Iterable<K> dataset) {
 		return new Pipeline<>(new Producer.StreamProducer(StreamSupport.stream(dataset.spliterator(), false)));
+	}
+	
+
+	public <K> Pipeline<O,K> cast(Class<K> targetType) {
+		var nextStage=new Stage<O,K>() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public K forward(O input) {
+				return (K)input;
+			}
+		};
+		
+		return new Pipeline<>(nextStage,this);
 	}
 	
 	
@@ -150,6 +168,45 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(nextStage,this);	
 	}
 
+	
+	
+//	public Schema categorize(String featureName) {
+//		var newSchema= new Schema(this);
+//		var f=newSchema.features.get(featureName);
+//		newSchema.features.put(featureName, f.setCategorize(true) );
+//		return newSchema;
+//	}
+	
+	public  Pipeline<O,Integer> categorize() {
+		
+		var nextStage=new Stage<O,Integer>() {
+			Dictionary<O> dictionary=new GenericDictionary<O>();
+			@Override
+			public Integer forward(O input) {
+				return Integer.valueOf(dictionary.indexOf(input));
+			}
+		};
+		
+		return new Pipeline<>(nextStage,this);
+	}
+
+	
+	public Pipeline<O,O> withSchema( Function<Schema,Schema> schemaBuilder) {
+		var nextStage=new Stage<O,O>() {
+			@Override
+			public O forward(O input) {
+				if (input instanceof Record) {
+					var currentRecord=(Record)input;
+					var newSchema=schemaBuilder.apply( currentRecord.getSchema());
+					currentRecord.setSchema(newSchema); 
+					return input;
+				} else {
+					throw new IllegalArgumentException("Datastream has no schema.");
+				}
+			}
+		};
+		return new Pipeline<>(nextStage,this);	
+	}
 
 
 	void forward(Object element) {

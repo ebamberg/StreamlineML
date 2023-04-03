@@ -1,4 +1,4 @@
-package de.ebamberg.streamline.ml.text;
+package de.ebamberg.streamline.ml.data.text;
 
 public interface Dictionary<T> {
 
@@ -7,6 +7,8 @@ public interface Dictionary<T> {
 	T elementOf(int index);
 
 	int size();
+	
+	boolean isLocked();
 	
 	default void show() {
 		System.out.print(String.format("Dictionary: %d elements",this.size()));

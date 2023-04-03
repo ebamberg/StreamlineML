@@ -4,6 +4,7 @@ import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDManager;
 import ai.djl.ndarray.index.NDIndex;
 import ai.djl.ndarray.types.Shape;
+import de.ebamberg.streamline.ml.data.text.Dictionary;
 
 public class OneHotEncoder<T> implements InputEncoder<T> {
 	

@@ -15,13 +15,25 @@ public class Feature<R> {
 	private R role;
 	
 	private boolean isCollection;
+	
+	private boolean isCategory;
 		
 	public Feature(String name, R role) {
 		super();
 		this.name  = name;
 		this.role	= role;
 		isCollection=false;
+		isCategory=false;
 	}
+	
+	protected Feature(Feature<R> cloneFrom) {
+		super();
+		this.name  = cloneFrom.name;
+		this.role	= cloneFrom.role;
+		isCollection=cloneFrom.isCollection;
+		isCategory=cloneFrom.isCategory;
+	}
+	
 
 
 	
@@ -42,6 +54,14 @@ public class Feature<R> {
 	@Override
 	public String toString() {
 		return "Feature [name=" + name + ", role=" + role + "]";
+	}
+
+
+
+	public Feature<R> setCategorize(boolean b) {
+		var nf=new Feature<R>(this);
+		nf.isCategory=true;
+		return nf;
 	}
 	
 	

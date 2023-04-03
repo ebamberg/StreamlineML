@@ -1,11 +1,15 @@
 package de.ebamberg.streamline.ml.data.pipeline;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+
+import de.ebamberg.streamline.ml.data.reader.CSVDataset;
+import de.ebamberg.streamline.ml.data.reader.CSVDatasetTest;
 
 public class PipelineTest {
 
@@ -41,6 +45,20 @@ public class PipelineTest {
 		assertEquals(3, counter.get());
 		
 	}
+
+	@Test
+	public void testPipelineCast() {
+		
+		var producer=new ArrayDataProducer<>(new String[] {"123","456","789"});
+		var p=Pipeline.fromProducer(producer)
+						.map(s-> {return Integer.valueOf(s);} )
+						.cast(Number.class )
+						.then(i-> assertTrue(i instanceof Number) );
+						
+		producer.start();
+		
+	}
+	
 	
 //	@Test
 //	public void testPipelineCanFlatMapFromStream() {
@@ -128,6 +146,33 @@ public class PipelineTest {
 						
 		producer.start();
 		
+	}
+	
+	@Test
+	public void testPipelineCategorizeAValue() {
+		
+		var index=new AtomicInteger();
+		
+			CSVDataset
+				.fromResource("csvDatasetTest.csv")
+				.read()
+				.categorize()
+				.then(e->assertEquals(index.getAndIncrement(),e))
+				.execute();
+					
+	}
+	
+	@Test
+	public void testPipelineSchemaChangesWithSchema() {
+		
+			CSVDataset
+				.fromResource("csvDatasetTest.csv")
+				.read()
+				.withSchema(schema-> schema
+										.categorize("header1")
+									)
+				
+				.execute();		
 	}
 	
 }
