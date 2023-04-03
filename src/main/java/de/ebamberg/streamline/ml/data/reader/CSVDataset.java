@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -97,7 +98,17 @@ public class CSVDataset implements DataReader <Record> {
 		}				
 	}
 
-	public static CSVDataset fromLocalFile(Path path) {
+	public static CSVDataset from(Path path) {
+		return fromPath(path);
+	}
+	public static CSVDataset from(URL url) {
+		return fromURL(url);
+	}
+	public static CSVDataset from(String url) throws MalformedURLException {
+		return from(new URL(url));
+	}
+	
+	public static CSVDataset fromPath(Path path) {
 		return new CSVDataset( () -> {
 			try {
 				return new FileReader(path.toFile());

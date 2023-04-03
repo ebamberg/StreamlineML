@@ -10,7 +10,7 @@ StreamlineML uses an easy to learn and easy to read
 
 ~~~
 			var dataset=CSVDataset
-						.fromURL(new URL("file://csvDatasetTest.csv"))
+						.from("file://csvDatasetTest.csv")
 						.read()
 						.log()
 						.execute();
