@@ -190,6 +190,25 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(nextStage,this);
 	}
 
+	public  Pipeline<O,Integer> categorize(String featureName) {
+		
+		var nextStage=new Stage<O,Integer>() {
+			Dictionary<Object> dictionary=new GenericDictionary<Object>();
+			@Override
+			public Integer forward(O input) {
+				if (input instanceof Record) {
+					var r=(Record)input;
+				return Integer.valueOf(dictionary.indexOf(r.getValue(featureName)));
+				} else {
+					throw new RuntimeException("input of categorize is not a schemabased record");
+				}
+			}
+		};
+		
+		return new Pipeline<>(nextStage,this);
+	}
+
+	
 	
 	public Pipeline<O,O> withSchema( Function<Schema,Schema> schemaBuilder) {
 		var nextStage=new Stage<O,O>() {

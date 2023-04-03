@@ -14,5 +14,17 @@ StreamlineML uses an easy to learn and easy to read
 						.read()
 						.log()
 						.execute();
-~~~					
+~~~				
+
+## building catalog feature
+
+~~~
+		var dataset=CSVDataset
+					.fromResource("/intentions.csv")
+					.read()
+					.log()
+					.categorize("intent")
+					.log()
+					.execute();
+~~~	
 					

@@ -11,29 +11,29 @@ public class IntentClassificationDemo {
 	public static void main(String[] args) throws Exception {
 		
 		var dataset=CSVDataset
-					.fromResource("/intentions.csv");
-		
-		var p=dataset
-				.read()
-				.log()
-				.execute();
+					.fromResource("/intentions.csv")
+					.read()
+					.log()
+					.categorize("intent")
+					.log()
+					.execute();
 		
 
 		// build dictionary for class
-		var classes=StreamDictionary.fromStream(dataset.stream().map(r->r.getValue("intention")));
-		
-		var words=StreamDictionary.fromStream(dataset
-												.stream()
-												.flatMap(r-> { 
-															var sentence=(String)r.getValue("sample");
-															return Arrays.stream(sentence.toLowerCase().split(" "));
-														})
-												
-											);
-		
-		classes.show();
-		words.show();
-		dataset.stream().forEach(System.out::println);
+//		var classes=StreamDictionary.fromStream(dataset.stream().map(r->r.getValue("intention")));
+//		
+//		var words=StreamDictionary.fromStream(dataset
+//												.stream()
+//												.flatMap(r-> { 
+//															var sentence=(String)r.getValue("sample");
+//															return Arrays.stream(sentence.toLowerCase().split(" "));
+//														})
+//												
+//											);
+//		
+//		classes.show();
+//		words.show();
+//		dataset.stream().forEach(System.out::println);
 		
 		
 		
