@@ -6,13 +6,15 @@ import de.ebamberg.streamline.ml.data.pipeline.Pipeline;
 import de.ebamberg.streamline.ml.data.reader.CSVDataset;
 import de.ebamberg.streamline.ml.text.StreamDictionary;
 
-public class IntentionModelDemo {
+public class IntentClassificationDemo {
 
 	public static void main(String[] args) throws Exception {
 		
-		var dataset=CSVDataset.fromURL(IntentionModelDemo.class.getResource("/intentions.csv"));
+		var dataset=CSVDataset
+					.fromURL(IntentClassificationDemo.class.getResource("/intentions.csv"));
 		
-		var p=Pipeline.fromStream(dataset.stream())
+		var p=dataset
+				.read()
 				.log()
 				.execute();
 		

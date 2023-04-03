@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,9 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(new Producer.StreamProducer(inputStream));
 	}
 
+	public static <K> Pipeline<K,K> from(Iterable<K> dataset) {
+		return new Pipeline<>(new Producer.StreamProducer(StreamSupport.stream(dataset.spliterator(), false)));
+	}
 	
 	
 	public <K> Pipeline<O,K> map(Function<O,K> mapFunction) {

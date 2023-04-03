@@ -8,9 +8,9 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
@@ -19,8 +19,9 @@ import org.apache.commons.csv.CSVParser;
 import de.ebamberg.streamline.ml.data.Record;
 import de.ebamberg.streamline.ml.data.Role;
 import de.ebamberg.streamline.ml.data.Schema;
+import de.ebamberg.streamline.ml.data.pipeline.DataReader;
 
-public class CSVDataset {
+public class CSVDataset implements DataReader <Record> {
 
 	private Supplier<Reader> readerSupplier;
 	private Map<String, Role> featureRoleMap; 
@@ -51,21 +52,30 @@ public class CSVDataset {
 		 return self();
 	 }
 
-	public Stream<Record> stream() throws IOException {
+	public Iterator<Record> iterator()  {
 	
-		Reader in = readerSupplier.get();
-		CSVParser parser = CSVFormat.EXCEL
-				.withFirstRecordAsHeader().
-				parse(in);
-		
-		Schema currentSchema;
-		if (this.schema!=null) {
-			currentSchema=schema;
-		} else {
-			currentSchema=new Schema(parser.getHeaderNames());
-		}
-		return StreamSupport.stream(parser.spliterator(), false)
-				.map(csvrecord-> {
+		CSVParser parser;
+		try {
+			Reader in = readerSupplier.get();
+			parser = CSVFormat.EXCEL
+					.withFirstRecordAsHeader().
+					parse(in);
+			Schema currentSchema;
+			if (this.schema!=null) {
+				currentSchema=schema;
+			} else {
+				currentSchema=new Schema(parser.getHeaderNames());
+			}
+			var innerIterator=parser.iterator();
+			return new Iterator<Record>() {
+				@Override
+				public boolean hasNext() {
+					return innerIterator.hasNext();
+				}
+
+				@Override
+				public Record next() {
+					var csvrecord=innerIterator.next();
 					var rec=new Record (currentSchema);
 				
 					currentSchema.forEach( f-> {
@@ -78,8 +88,13 @@ public class CSVDataset {
 					} ) ;
 					
 					return rec;
-				});
-		
+				}
+				
+			};
+
+		} catch (IOException e) {
+			throw new RuntimeException("error reading csv input",e);
+		}				
 	}
 
 	public static CSVDataset fromLocalFile(Path path) {
