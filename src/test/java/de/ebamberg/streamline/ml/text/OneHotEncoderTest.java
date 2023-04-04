@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ai.djl.ndarray.NDArray;
@@ -13,6 +14,7 @@ import ai.djl.ndarray.NDArray;
 public class OneHotEncoderTest {
 
 	@Test
+	@Disabled ("old test we are replacing this with a Pipeline approach")
 	public void testWithCharacterDictionary() throws Exception {
 		var textData = "abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz ";
 		var dict = CharacterBasedDictionary.fromString(textData);

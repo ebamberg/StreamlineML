@@ -16,6 +16,7 @@ import de.ebamberg.streamline.ml.data.Record;
 import de.ebamberg.streamline.ml.data.Schema;
 import de.ebamberg.streamline.ml.data.text.Dictionary;
 import de.ebamberg.streamline.ml.data.text.GenericDictionary;
+import de.ebamberg.streamline.ml.layer.rnn.RNNLayer;
 
 public class Pipeline<I, O>  {
 
@@ -67,6 +68,15 @@ public class Pipeline<I, O>  {
 	}
 
 	
+	private Pipeline() {
+		this.stage=input->{
+			nextStages.forEach(st-> st.forward((O)input));
+			return (O)input;
+		};
+		initialStage=(Stage<Object, ?>) stage;
+		this.nextStages=new ArrayList<Stage<O, ?>>();
+	}
+	
 	protected Pipeline(Producer<?> producer) {
 		producer.attach((Pipeline<?, ?>) this);
 		firstProducer=producer;
@@ -91,6 +101,10 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(new Producer.StreamProducer(StreamSupport.stream(dataset.spliterator(), false)));
 	}
 	
+	protected static <K> Pipeline<K,K> forType(Class<K> type) {
+		return new Pipeline<>();
+		
+	}
 
 	public <K> Pipeline<O,K> cast(Class<K> targetType) {
 		var nextStage=new Stage<O,K>() {
@@ -115,7 +129,7 @@ public class Pipeline<I, O>  {
 		
 		return new Pipeline<>(nextStage,this);
 	}
-
+	
 	public <K> Pipeline<O,K> flatMap(Function<O,Iterator<K>> mapFunction) {
 		var nextStage=new IterableStage<O,Iterator<K>>() {
 			@Override
@@ -134,6 +148,22 @@ public class Pipeline<I, O>  {
 			@Override
 			public O forward(O input) {
 				consumer.accept(input);
+				return input;
+			}
+		};
+		return new Pipeline<>(nextStage,this);	
+	}
+
+	public Pipeline<O,O> withFeature(String featureName, Function<Pipeline<?,?>,Pipeline<?,?>> pipelineBuilder) {
+		var nextStage=new Stage<O,O>() {
+			@Override
+			public O forward(O input) {
+				var record=(Record)input;
+				Object value=record.getValue(featureName);
+				var featurePipeline=Pipeline.forType(String.class);
+				featurePipeline=(Pipeline<String, String>) pipelineBuilder.apply(featurePipeline);
+				featurePipeline.then( result-> record.updateValue(featureName, result));
+				featurePipeline.forward(value);
 				return input;
 			}
 		};

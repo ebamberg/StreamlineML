@@ -98,11 +98,11 @@ public class Schema {
 	}
 
 
-	public Schema categorize(String featureName) {
-		var newSchema= new Schema(this);
-		var f=newSchema.features.get(featureName);
-		newSchema.features.put(featureName, f.setCategorize(true) );
-		return newSchema;
-	}
+//	public Schema categorize(String featureName) {
+//		var newSchema= new Schema(this);
+//		var f=newSchema.features.get(featureName);
+//		newSchema.features.put(featureName, f.setCategorize(true) );
+//		return newSchema;
+//	}
 	
 }

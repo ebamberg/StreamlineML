@@ -162,16 +162,49 @@ public class PipelineTest {
 					
 	}
 	
+//	@Test
+//	public void testPipelineSchemaChangesWithSchema() {
+//		
+//			CSVDataset
+//				.fromResource("csvDatasetTest.csv")
+//				.read()
+//				.withSchema(schema-> schema
+//										.categorize("header1")
+//									)
+//				
+//				.execute();		
+//	}
+	
 	@Test
-	public void testPipelineSchemaChangesWithSchema() {
+	public void testPipelineChangeValuesWithSchema() {
 		
 			CSVDataset
 				.fromResource("csvDatasetTest.csv")
 				.read()
-				.withSchema(schema-> schema
-										.categorize("header1")
-									)
-				
+				.then(record-> {
+					var val=(String)record.getValue("header2");
+					record.updateValue("header2", val.substring(0,1));
+				})
+				.then(record->assertEquals(1, ((String)record.getValue("header2")).length())   )
+				.log()
+				.execute();		
+	}
+	
+	@Test
+	public void testPipelineWithFeaturePipelines() {
+		
+			CSVDataset
+				.fromResource("csvDatasetTest.csv")
+				.read()
+				.withFeature("header2", feature->feature
+													.cast(String.class)
+													.map(v->v.substring(0,1))
+													.log() 
+							)
+				.then(record->assertEquals(1, ((String)record.getValue("header2")).length())   )
+				.then(record->  record.updateValue("header2","overridden literal value")  )
+				.then(record->assertEquals("overridden literal value".length(), ((String)record.getValue("header2")).length())   )
+				.log()
 				.execute();		
 	}
 	

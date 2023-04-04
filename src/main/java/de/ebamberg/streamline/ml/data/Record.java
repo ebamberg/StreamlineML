@@ -22,6 +22,11 @@ public class Record {
 			values.add(value);
 	}
 
+	public void updateValue(String featureName, Object value) {
+		int idx=schema.indexOf(featureName);
+		values.set(idx, value);
+}
+	
 	public Object getValue(Feature feature) {
 		return getValue(feature.getName());
 	}

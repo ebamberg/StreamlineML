@@ -66,4 +66,9 @@ public class StreamDictionary<T> implements Dictionary<T> {
 		System.out.print(sb.toString());
 	}
 
+	@Override
+	public boolean isLocked() {
+		return false;
+	}
+
 }
