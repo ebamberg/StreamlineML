@@ -55,9 +55,9 @@ input data
 				.fromResource("csvDatasetTest.csv")
 				.read()
 				.withFeature("header2", feature->feature
-							.cast(String.class)
-							.map(v->v.substring(0,1))
-							.log() 
+								.cast(String.class)
+								.map(v->v.substring(0,1))
+								.log() 
 							)
 				.then(record->  record.updateValue("header2","overridden literal value")  )
 				.log()
