@@ -1,6 +1,7 @@
 package de.ebamberg.streamline.ml.data;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.compress.utils.Lists;
 
@@ -25,7 +26,14 @@ public class Record {
 	public void updateValue(String featureName, Object value) {
 		int idx=schema.indexOf(featureName);
 		values.set(idx, value);
-}
+	}
+	
+	public void updateValue(String featureName, Function<Object,Object> func) {
+		int idx=schema.indexOf(featureName);
+		var value=getValue(featureName);
+		values.set(idx, func.apply(value));
+	}
+	
 	
 	public Object getValue(Feature feature) {
 		return getValue(feature.getName());

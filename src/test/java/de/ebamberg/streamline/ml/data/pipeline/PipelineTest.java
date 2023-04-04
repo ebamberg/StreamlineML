@@ -203,7 +203,9 @@ public class PipelineTest {
 							)
 				.then(record->assertEquals(1, ((String)record.getValue("header2")).length())   )
 				.then(record->  record.updateValue("header2","overridden literal value")  )
+				.log()
 				.then(record->assertEquals("overridden literal value".length(), ((String)record.getValue("header2")).length())   )
+				.then(record->  record.updateValue("header2", value-> ((String)value).substring(0,10))  )
 				.log()
 				.execute();		
 	}
