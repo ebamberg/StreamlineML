@@ -51,18 +51,31 @@ input data
 
 ## dealing with tabular data
 
+when dealing with tabular data we often want to transform the values in a specific column.
+We can select a column with "withFeature" and define a pipeline to transform the specific values of column.  
+
+Alternative we access a specific column using the record object itself which represents a row of data
+
+|code                                                          | description                               |
+|--------------------------------------------------------------|-------------------------------------------|
+|record.getValue(featurename)                                  | get a Value                               |
+|record.updateValue(featurename, newValue)                     | update the Value     					   |
+|record.updateValue(featurename, value->value.substring(0,5) ) | update the Value using a lambda function  |
+
+
+~~~
 			CSVDataset
 				.fromResource("csvDatasetTest.csv")
 				.read()
 				.withFeature("header2", feature->feature
-								.cast(String.class)
-								.map(v->v.substring(0,1))
-								.log() 
+									.cast(String.class)
+									.map(v->v.substring(0,1))
+									.log() 
 							)
 				.then(record->  record.updateValue("header2","overridden literal value")  )
 				.log()
 				.execute();	
-				
+~~~				
 					
 
 					
