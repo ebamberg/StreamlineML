@@ -94,3 +94,51 @@ Alternative we access a specific column using the record object itself which rep
 			.execute();
 
 ~~~				
+
+## Unit Testing of Pipelines
+
+we can define our pipeline which is decoupled from unit test assertion.
+To use the pipeline in  unittest we can attach 1..n pipeline branches
+execution the unittest assertion.
+Then we execute the pipeline.
+Test data get pushed through the pipeline and the result get splitted and pushed through all assertions branches.
+
+~~~
+	@Test
+	public void testDenseInputLayerWithActivation() {
+		var inputData= new float[][] {
+            {1f,2f,3f,2.5f},
+            {2f,5f,-1f,2f},
+            {-1.5f,2.7f,3.3f,-0.8f}
+		};
+
+		// we define our pure pipeline without any test-logic
+		var pipelineUnderTest=Pipeline.fromProducer(new FloatArrayProducer<NDArray>(inputData))
+								.inputLayer(new DenseLayer(),3)
+								.layer(new ReLUActivation())
+								.log();
+		
+			// add assertions to the pipelline
+			pipelineUnderTest
+				.then(array->assertNotNull(array))
+				.map(NDArray::getShape)
+				.then(shape->assertEquals(3,shape.get(0)))
+				.then(shape->assertEquals(5,shape.get(1)));
+
+			// add more assertions to the pipelline
+			pipelineUnderTest
+				.then(array->assertNotNull(array))
+				.then(array-> {
+					for (int y=0;y<array.getShape().get(0);y++) {
+						for (int x=0;x<array.getShape().get(0);x++) {
+							assertTrue(array.getFloat(y,x)>=0, "assert that after reLu activation we have no minus values in result");
+						}
+					}
+					
+				} );
+			//now start the pipeline to run the tests
+			pipelineUnderTest.execute();
+			
+	}
+
+~~~
