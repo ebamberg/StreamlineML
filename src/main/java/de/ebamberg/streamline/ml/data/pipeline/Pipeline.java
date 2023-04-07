@@ -12,11 +12,14 @@ import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ai.djl.ndarray.NDArray;
+import ai.djl.ndarray.NDArrays;
+import ai.djl.ndarray.NDList;
 import de.ebamberg.streamline.ml.data.Record;
 import de.ebamberg.streamline.ml.data.Schema;
 import de.ebamberg.streamline.ml.data.text.Dictionary;
 import de.ebamberg.streamline.ml.data.text.GenericDictionary;
-import de.ebamberg.streamline.ml.layer.rnn.RNNLayer;
+import de.ebamberg.streamline.ml.layer.Layer;
 
 public class Pipeline<I, O>  {
 
@@ -37,7 +40,9 @@ public class Pipeline<I, O>  {
 		
 		this.stage = input -> { 
 				O output=newStage.forward (input);
-				nextStages.forEach(st->st.forward(output));
+				if (output!=null) {
+					nextStages.forEach(st->st.forward(output));
+				}
 				return output;
 		};
 		
@@ -58,7 +63,9 @@ public class Pipeline<I, O>  {
 		this.stage = input -> { 
 				var iterator=newStage.forward (input);
 				iterator.forEachRemaining( singleElement-> {
-					nextStages.forEach(st->st.forward(singleElement));
+					if (singleElement!=null) {
+						nextStages.forEach(st->st.forward(singleElement));
+					}
 				});
 				
 				return null;
@@ -259,16 +266,63 @@ public class Pipeline<I, O>  {
 
 
 	void forward(Object element) {
-		if (initialStage!=null) {
+		if (initialStage!=null && element!=null) {
 			initialStage.forward(element);
 		}
 	}
 
 	public Pipeline<I,O> execute() {
 		if (firstProducer!=null) {
-			firstProducer.start();
+			try {
+				firstProducer.start();
+			} finally {
+				try {
+					firstProducer.close();
+				} catch (Exception e) {
+					log.error("ERROR unable to free resource of data producer",e);
+				}
+			}
 		}
 		return this;
+	}
+	
+//	public <K> Pipeline<O,K> map(Function<O,K> mapFunction) {
+//		var nextStage=new Stage<O,K>() {
+//			@Override
+//			public K forward(O input) {
+//				return mapFunction.apply(input);
+//			}
+//		};
+//		
+//		return new Pipeline<>(nextStage,this);
+//	}
+
+	public <K> Pipeline<O,K> inputLayer(Layer<O,K> layer,int batchsize) {
+		var nextStage=new Stage<O,K>() {
+			private NDList batch=new NDList();
+			@Override
+			public K forward(O input) {
+				batch.add((NDArray) input);
+				if (batch.size()<batchsize) {
+					return null;
+				} else {
+					NDArray stackedInputs=NDArrays.stack(batch);
+					batch.clear();
+					return layer.forward((O)stackedInputs);	
+				}				
+			}
+		};
+		return new Pipeline<>(nextStage,this);
+	}
+	
+	public <K> Pipeline<O,K> layer(Layer<O,K> layer) {
+		var nextStage=new Stage<O,K>() {
+			@Override
+			public K forward(O input) {
+				return layer.forward((O)input);
+			}
+		};
+		return new Pipeline<>(nextStage,this);
 	}
 
 	

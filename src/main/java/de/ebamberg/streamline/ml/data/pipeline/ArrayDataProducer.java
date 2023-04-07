@@ -30,4 +30,11 @@ public class ArrayDataProducer<T> implements Producer<T> {
 		this.pipeline=(Pipeline<T, ?>) pipeline;
 	}
 
+
+	@Override
+	public void close() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

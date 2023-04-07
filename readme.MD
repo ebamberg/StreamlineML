@@ -6,7 +6,8 @@ StreamlineML uses an easy to learn and easy to read
 
 # Getting Started
 
-## reading data from CSV
+## Data Reading and Trnasformation
+### reading data from CSV
 
 ~~~
 			var dataset=CSVDataset
@@ -16,7 +17,7 @@ StreamlineML uses an easy to learn and easy to read
 						.execute();
 ~~~				
 
-## building catalog feature
+### building catalog feature
 
 we can read a csv file for intention classification and convert the feature intent into a categorical feature. A dictionary for the categories is build. 
 
@@ -77,5 +78,19 @@ Alternative we access a specific column using the record object itself which rep
 				.execute();	
 ~~~				
 					
+## Machine learning Layers
+### simple classification example
+~~~
+		var inputData= new float[][] {
+            {1f,2f,3f,2.5f},
+            {2f,5f,-1f,2f},
+            {-1.5f,2.7f,3.3f,-0.8f}
+		};
 
-					
+		Pipeline.fromProducer(new FloatArrayProducer<NDArray>(inputData))
+			.inputLayer(new DenseLayer(),3)
+			.layer(new ReLUActivation())
+			.log()
+			.execute();
+
+~~~				

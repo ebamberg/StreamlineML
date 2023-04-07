@@ -3,7 +3,7 @@ package de.ebamberg.streamline.ml.activation;
 import ai.djl.ndarray.NDArray;
 import de.ebamberg.streamline.ml.layer.Layer;
 
-public class TanhActivation implements Layer {
+public class TanhActivation implements Layer<NDArray,NDArray> {
 
     /**
      * 

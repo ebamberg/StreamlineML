@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public interface Producer<T> {
+import ai.djl.ndarray.NDManager;
+
+public interface Producer<T> extends AutoCloseable {
 
 	void start();
 	void stop();
@@ -23,6 +25,10 @@ public interface Producer<T> {
 		@Override
 		public void stop() {
 		}
+		
+		public void close() {
+			
+		}
 
 		
 	}
@@ -34,6 +40,9 @@ public interface Producer<T> {
 		
 		public StreamProducer(Stream<T> stream) {
 			super();
+			if (stream==null) {
+				throw new NullPointerException("cannot instantiate producer without source data");
+			}
 			this.stream = stream;
 		}
 		@Override
@@ -55,6 +64,9 @@ public interface Producer<T> {
 		
 		public ListProducer(List<T> list) {
 			super();
+			if (list==null) {
+				throw new NullPointerException("cannot instantiate producer without source data");
+			}
 			this.list = list;
 		}
 		@Override
@@ -65,7 +77,46 @@ public interface Producer<T> {
 		}
 		@Override
 		public void stop() {
+			close();
 		}
 	}
+	
+	public class FloatArrayProducer<NDArray> extends AbstractProducer<NDArray>{
+		
+		
+		private float[][] data;
+		private NDManager manager;
+		
+		public FloatArrayProducer(float[][] data) {
+			super();
+			if (data==null) {
+				throw new NullPointerException("cannot instantiate producer without source data");
+			}
+			this.data = data;
+		}
+		@Override
+		public void start() {
+			if (pipeline!=null) {
+				if (manager==null) {
+					manager=NDManager.newBaseManager();
+				}
+				Arrays.stream(data).forEach(e-> {
+													pipeline.forward(manager.create(e));
+												});
+			}
+		}
+		@Override
+		public void stop() {
+			super.stop();
+			
+		}
+		
+		@Override
+		public void close() {
+			manager.close();
+		}
+
+	}
+	
 	
 }

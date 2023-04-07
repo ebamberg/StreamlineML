@@ -46,6 +46,35 @@ public class PipelineTest {
 		
 	}
 
+	
+	@Test
+	public void testPipelineStageReturningNULLDoNotPushesToNextStage() {
+		
+		var producer=new ArrayDataProducer<>(new String[] {"123","","789"});
+		var counter=new AtomicInteger();
+		var p=Pipeline.fromProducer(producer)
+						.map(s->s.isEmpty() ? null :  s )
+						.then(i->counter.incrementAndGet());
+						
+		producer.start();
+		assertEquals(2, counter.get());
+		
+	}
+
+	@Test
+	public void testPipelineProducerProducesNULLDoNotPushesToNextStage() {
+		
+		var producer=new ArrayDataProducer<>(new String[] {"123",null,"789"});
+		var counter=new AtomicInteger();
+		var p=Pipeline.fromProducer(producer)
+						.then(i->counter.incrementAndGet());
+						
+		producer.start();
+		assertEquals(2, counter.get());
+		
+	}
+	
+	
 	@Test
 	public void testPipelineCast() {
 		

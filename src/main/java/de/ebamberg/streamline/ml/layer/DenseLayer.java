@@ -5,7 +5,7 @@ import ai.djl.ndarray.NDManager;
 import ai.djl.ndarray.types.DataType;
 import ai.djl.ndarray.types.Shape;
 
-public class DenseLayer implements Layer {
+public class DenseLayer implements Layer<NDArray,NDArray> {
 
 	private Initializer initializer=Initializer.random();
 	
@@ -13,14 +13,27 @@ public class DenseLayer implements Layer {
 	protected NDArray weights;
 	protected NDArray biases;
 	
+	private boolean initialized=false;
+	
 	public DenseLayer(NDManager manager,Shape shape, int neurons) {
+		initializeLayer(manager, shape);
+	}
+
+	private void initializeLayer(NDManager manager, Shape shape) {
 		long inputSize=shape.get(1);
 		weights=initializer.init(manager, inputSize,numNeurons);
 		biases=manager.zeros(new Shape(1,numNeurons),DataType.FLOAT32);
 	}
+
+	public DenseLayer() {
+	}
 	
 	@Override
 	public NDArray forward(NDArray input) {
+		if (!initialized) {
+			initialized=true;
+			initializeLayer(input.getManager().newSubManager(),input.getShape());
+		}
 		return input.dot(weights).add(biases);
 	}
 
