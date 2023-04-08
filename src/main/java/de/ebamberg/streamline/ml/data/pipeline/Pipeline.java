@@ -297,7 +297,7 @@ public class Pipeline<I, O>  {
 //		return new Pipeline<>(nextStage,this);
 //	}
 
-	public <K> Pipeline<O,K> inputLayer(Layer<O,K> layer,int batchsize) {
+	public <K> Pipeline<O,K> throughInputLayer(Layer<O,K> layer,int batchsize) {
 		var nextStage=new Stage<O,K>() {
 			private NDList batch=new NDList();
 			@Override
@@ -315,7 +315,7 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(nextStage,this);
 	}
 	
-	public <K> Pipeline<O,K> layer(Layer<O,K> layer) {
+	public <K> Pipeline<O,K> throughLayer(Layer<O,K> layer) {
 		var nextStage=new Stage<O,K>() {
 			@Override
 			public K forward(O input) {

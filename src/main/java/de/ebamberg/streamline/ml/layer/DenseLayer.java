@@ -15,9 +15,9 @@ public class DenseLayer implements Layer<NDArray,NDArray> {
 	
 	private boolean initialized=false;
 	
-	public DenseLayer(NDManager manager,Shape shape, int neurons) {
-		initializeLayer(manager, shape);
-	}
+//	public DenseLayer(NDManager manager,Shape shape, int neurons) {
+//		initializeLayer(manager, shape);
+//	}
 
 	private void initializeLayer(NDManager manager, Shape shape) {
 		long inputSize=shape.get(1);
@@ -25,7 +25,8 @@ public class DenseLayer implements Layer<NDArray,NDArray> {
 		biases=manager.zeros(new Shape(1,numNeurons),DataType.FLOAT32);
 	}
 
-	public DenseLayer() {
+	protected DenseLayer(int numberOfNeurons) {
+		this.numNeurons=numberOfNeurons;
 	}
 	
 	@Override
@@ -35,6 +36,10 @@ public class DenseLayer implements Layer<NDArray,NDArray> {
 			initializeLayer(input.getManager().newSubManager(),input.getShape());
 		}
 		return input.dot(weights).add(biases);
+	}
+	
+	public static DenseLayer ofSize(int numberOfNeurons) {
+		return new DenseLayer(numberOfNeurons);
 	}
 
 }

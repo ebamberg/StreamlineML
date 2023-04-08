@@ -88,8 +88,10 @@ Alternative we access a specific column using the record object itself which rep
 		};
 
 		Pipeline.fromProducer(new FloatArrayProducer<NDArray>(inputData))
-			.inputLayer(new DenseLayer(),3)
-			.layer(new ReLUActivation())
+			.throughInputLayer(DenseLayer.ofSize(5),3)
+			.throughLayer(new ReLUActivation())
+			.throughLayer(DenseLayer.ofSize(5))
+			.throughLayer(new SoftMaxActivation())
 			.log()
 			.execute();
 
