@@ -13,7 +13,8 @@ public class DenseLayerTest {
 		try (var manager = NDManager.newBaseManager()) {
 			var x = manager.create(inputData);
 
-			var layer1 = new DenseLayer(manager, x.getShape(), 5);
+		//	var layer1 = new DenseLayer(manager, x.getShape(), 5);
+			var layer1 = DenseLayer.ofSize(5);
 			var output1 = layer1.forward(x);
 
 			System.out.printf("after dense layer: %s\n", output1.toString());

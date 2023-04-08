@@ -325,5 +325,14 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(nextStage,this);
 	}
 
+	public <K> Pipeline<O,K> activate(Layer<O,K> layer) {
+		var nextStage=new Stage<O,K>() {
+			@Override
+			public K forward(O input) {
+				return layer.forward((O)input);
+			}
+		};
+		return new Pipeline<>(nextStage,this);
+	}
 	
 }

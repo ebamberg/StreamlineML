@@ -11,6 +11,7 @@ import de.ebamberg.streamline.ml.activation.ReLUActivation;
 import de.ebamberg.streamline.ml.activation.SoftMaxActivation;
 import de.ebamberg.streamline.ml.data.pipeline.Pipeline;
 import de.ebamberg.streamline.ml.data.pipeline.Producer.FloatArrayProducer;
+import static de.ebamberg.streamline.ml.activation.Activations.*;
 
 public class SimpleClassificationPipelineTest {
 
@@ -44,7 +45,7 @@ public class SimpleClassificationPipelineTest {
 		// we define our pure pipeline without any test-logic
 		var pipelineUnderTest=Pipeline.fromProducer(new FloatArrayProducer<NDArray>(inputData))
 								.throughInputLayer(DenseLayer.ofSize(5),3)
-								.throughLayer(new ReLUActivation())
+								.throughLayer(reLU)
 								.log();
 		
 			// add assertions to the pipelline
@@ -81,9 +82,9 @@ public class SimpleClassificationPipelineTest {
 		// we define our pure pipeline without any test-logic
 		var pipelineUnderTest=Pipeline.fromProducer(new FloatArrayProducer<NDArray>(inputData))
 								.throughInputLayer(DenseLayer.ofSize(5),3)
-								.throughLayer(new ReLUActivation())
+								.activate(reLU)
 								.throughLayer(DenseLayer.ofSize(5))
-								.throughLayer(new SoftMaxActivation())
+								.activate(softMax)
 								.log();
 		
 			// add assertions to the pipelline
