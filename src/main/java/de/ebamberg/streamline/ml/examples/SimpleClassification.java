@@ -1,13 +1,12 @@
 package de.ebamberg.streamline.ml.examples;
 
-import ai.djl.ndarray.NDManager;
-import ai.djl.ndarray.types.Shape;
-import de.ebamberg.streamline.ml.activation.ReLUActivation;
-import de.ebamberg.streamline.ml.activation.SoftMaxActivation;
+import static de.ebamberg.streamline.ml.activation.Activation.reLU;
+import static de.ebamberg.streamline.ml.activation.Activation.softMax;
+
+import ai.djl.ndarray.NDArray;
 import de.ebamberg.streamline.ml.data.pipeline.Pipeline;
 import de.ebamberg.streamline.ml.data.pipeline.Producer.FloatArrayProducer;
 import de.ebamberg.streamline.ml.layer.DenseLayer;
-import de.ebamberg.streamline.ml.loss.CategoricalCrossentropyLoss;
 
 public class SimpleClassification {
 
@@ -19,7 +18,11 @@ public class SimpleClassification {
 			};
 		var categories = new float[] {0f,1f,1f};	// categories
 	
-		Pipeline.fromProducer(new FloatArrayProducer(inputData))
+		Pipeline.fromProducer(new FloatArrayProducer<NDArray>(inputData))
+			.throughInputLayer(DenseLayer.ofSize(5),3)
+			.activate(reLU)
+			.throughLayer(DenseLayer.ofSize(5))
+			.activate(softMax)
 			.log()
 			.execute();
 //		

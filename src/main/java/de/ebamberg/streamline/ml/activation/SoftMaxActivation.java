@@ -10,7 +10,7 @@ import de.ebamberg.streamline.ml.layer.Layer;
  * @author erikb
  *
  */
-public class SoftMaxActivation implements Layer<NDArray,NDArray> {
+public class SoftMaxActivation implements Activation {
 
 	@Override
 	public NDArray forward(NDArray input) {

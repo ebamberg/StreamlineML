@@ -1,5 +1,7 @@
 package de.ebamberg.streamline.ml.layer;
 
+import static de.ebamberg.streamline.ml.activation.Activation.reLU;
+import static de.ebamberg.streamline.ml.activation.Activation.softMax;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,11 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import ai.djl.ndarray.NDArray;
-import de.ebamberg.streamline.ml.activation.ReLUActivation;
-import de.ebamberg.streamline.ml.activation.SoftMaxActivation;
 import de.ebamberg.streamline.ml.data.pipeline.Pipeline;
 import de.ebamberg.streamline.ml.data.pipeline.Producer.FloatArrayProducer;
-import static de.ebamberg.streamline.ml.activation.Activations.*;
 
 public class SimpleClassificationPipelineTest {
 

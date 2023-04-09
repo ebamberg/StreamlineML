@@ -3,7 +3,7 @@ package de.ebamberg.streamline.ml.activation;
 import ai.djl.ndarray.NDArray;
 import de.ebamberg.streamline.ml.layer.Layer;
 
-public class ReLUActivation implements Layer<NDArray,NDArray> {
+public class ReLUActivation implements Activation {
 
 	/**
 	 * defined as y=max(0,x)
