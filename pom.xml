@@ -8,8 +8,8 @@
 	<name>StreamLineML</name>
 
 	<properties>
-		<maven.compiler.target>18</maven.compiler.target>
-		<maven.compiler.source>18</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
 		<djl.version>0.19.0</djl.version>
 		<opennlp.version>2.1.1</opennlp.version>
 		<slf4j.version>[2.0.7,)</slf4j.version>
@@ -72,5 +72,17 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 
 </project>
