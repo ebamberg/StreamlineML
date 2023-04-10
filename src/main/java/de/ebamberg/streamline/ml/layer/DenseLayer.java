@@ -5,7 +5,7 @@ import ai.djl.ndarray.NDManager;
 import ai.djl.ndarray.types.DataType;
 import ai.djl.ndarray.types.Shape;
 
-public class DenseLayer implements Layer<NDArray,NDArray> {
+public class DenseLayer implements Layer {
 
 	private Initializer initializer=Initializer.random();
 	

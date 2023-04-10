@@ -1,8 +1,10 @@
 package de.ebamberg.streamline.ml.layer;
 
-@FunctionalInterface
-public interface Layer<I,O> {
+import ai.djl.ndarray.NDArray;
 
-	O forward(I input);
+@FunctionalInterface
+public interface Layer {
+
+	NDArray forward(NDArray input);
 	
 }

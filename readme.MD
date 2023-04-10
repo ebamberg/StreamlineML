@@ -92,6 +92,7 @@ Alternative we access a specific column using the record object itself which rep
 			.activate(reLU)
 			.throughLayer(DenseLayer.ofSize(5))
 			.activate(softMax)
+			.transformOutput(o->new Classification(o))
 			.log()
 			.execute();
 
@@ -123,7 +124,7 @@ Test data get pushed through the pipeline and the result get splitted and pushed
 			// add assertions to the pipelline
 			pipelineUnderTest
 				.then(array->assertNotNull(array))
-				.map(NDArray::getShape)
+				.transformOutput(NDArray::getShape)
 				.then(shape->assertEquals(3,shape.get(0)))
 				.then(shape->assertEquals(5,shape.get(1)));
 

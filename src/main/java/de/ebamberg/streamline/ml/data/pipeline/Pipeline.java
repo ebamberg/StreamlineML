@@ -27,10 +27,11 @@ public class Pipeline<I, O>  {
 	
 	private Stage<I,O> stage;
 	
-	private List<Stage<O,?>> nextStages;
 	
-	private Stage<Object,?> initialStage;
-	private Producer<?> firstProducer;
+	// package private !! when need to clone the state in other Pipeline-classes
+	List<Stage<O,?>> nextStages;
+	Stage<Object,?> initialStage;
+	Producer<?> firstProducer;
 	
 	protected Pipeline( Stage<I, O> newStage,Pipeline<?,I> parent) {
 		super();
@@ -49,6 +50,24 @@ public class Pipeline<I, O>  {
 		parent.nextStages.add(this.stage);
 	}
 
+	protected Pipeline( Stage<NDArray, O> newStage,NeuronalNetworkPipeline parent) {
+		super();
+		this.initialStage = parent.initialStage;
+		this.firstProducer = parent.firstProducer;
+		
+		this.nextStages=new ArrayList<Stage<O, ?>>();
+		
+		this.stage = input -> { 
+				O output=newStage.forward ((NDArray)input);
+				if (output!=null) {
+					nextStages.forEach(st->st.forward(output));
+				}
+				return output;
+		};
+		
+		parent.nextStages.add((Stage<NDArray, ?>)this.stage);
+	}
+	
 	private void clonePrivateState(Pipeline<?, I> parent) {
 		this.initialStage = parent.initialStage;
 		this.firstProducer = parent.firstProducer;
@@ -205,15 +224,7 @@ public class Pipeline<I, O>  {
 		return new Pipeline<>(nextStage,this);	
 	}
 
-	
-	
-//	public Schema categorize(String featureName) {
-//		var newSchema= new Schema(this);
-//		var f=newSchema.features.get(featureName);
-//		newSchema.features.put(featureName, f.setCategorize(true) );
-//		return newSchema;
-//	}
-	
+		
 	public  Pipeline<O,Integer> categorize() {
 		
 		var nextStage=new Stage<O,Integer>() {
@@ -285,54 +296,44 @@ public class Pipeline<I, O>  {
 		}
 		return this;
 	}
-	
-//	public <K> Pipeline<O,K> map(Function<O,K> mapFunction) {
-//		var nextStage=new Stage<O,K>() {
-//			@Override
-//			public K forward(O input) {
-//				return mapFunction.apply(input);
-//			}
-//		};
-//		
-//		return new Pipeline<>(nextStage,this);
-//	}
 
-	public <K> Pipeline<O,K> throughInputLayer(Layer<O,K> layer,int batchsize) {
-		var nextStage=new Stage<O,K>() {
+	public NeuronalNetworkPipeline throughInputLayer(Layer layer,int batchsize) {
+		var nextStage=new Stage<O,NDArray>() {
 			private NDList batch=new NDList();
 			@Override
-			public K forward(O input) {
+			public NDArray forward(O input) {
+				//TODO encode input from input-types to NDArray !!!!
 				batch.add((NDArray) input);
 				if (batch.size()<batchsize) {
 					return null;
 				} else {
 					NDArray stackedInputs=NDArrays.stack(batch);
 					batch.clear();
-					return layer.forward((O)stackedInputs);	
+					return (NDArray)layer.forward(stackedInputs);	
 				}				
 			}
 		};
-		return new Pipeline<>(nextStage,this);
+		return new NeuronalNetworkPipeline(nextStage,this);
 	}
 	
-	public <K> Pipeline<O,K> throughLayer(Layer<O,K> layer) {
-		var nextStage=new Stage<O,K>() {
-			@Override
-			public K forward(O input) {
-				return layer.forward((O)input);
-			}
-		};
-		return new Pipeline<>(nextStage,this);
-	}
-
-	public <K> Pipeline<O,K> activate(Layer<O,K> layer) {
-		var nextStage=new Stage<O,K>() {
-			@Override
-			public K forward(O input) {
-				return layer.forward((O)input);
-			}
-		};
-		return new Pipeline<>(nextStage,this);
-	}
+//	public <K> Pipeline<O,K> throughLayer(Layer<O,K> layer) {
+//		var nextStage=new Stage<O,K>() {
+//			@Override
+//			public K forward(O input) {
+//				return layer.forward((O)input);
+//			}
+//		};
+//		return new Pipeline<>(nextStage,this);
+//	}
+//
+//	public <K> Pipeline<O,K> activate(Layer<O,K> layer) {
+//		var nextStage=new Stage<O,K>() {
+//			@Override
+//			public K forward(O input) {
+//				return layer.forward((O)input);
+//			}
+//		};
+//		return new Pipeline<>(nextStage,this);
+//	}
 	
 }

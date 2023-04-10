@@ -6,7 +6,7 @@ import ai.djl.ndarray.types.Shape;
 import de.ebamberg.streamline.ml.layer.Layer;
 
 // https://github.com/JY-Yoon/RNN-Implementation-using-NumPy
-public class RNNLayer implements Layer<NDArray,NDArray> {
+public class RNNLayer implements Layer {
 
 	private long hiddenSize=100;
 	private NDArray weight_xh,weight_hh,weight_hy,bias_h,bias_y, h_prev;

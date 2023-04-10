@@ -27,7 +27,7 @@ public class SimpleClassificationPipelineTest {
 			.throughInputLayer(DenseLayer.ofSize(5),3)
 			.log()
 			.then(array->assertNotNull(array))
-			.map(NDArray::getShape)
+			.transformOutput(NDArray::getShape)
 			.then(shape->assertEquals(3,shape.get(0)))
 			.then(shape->assertEquals(5,shape.get(1)))
 			.execute();
@@ -50,7 +50,7 @@ public class SimpleClassificationPipelineTest {
 			// add assertions to the pipelline
 			pipelineUnderTest
 				.then(array->assertNotNull(array))
-				.map(NDArray::getShape)
+				.transformOutput(NDArray::getShape)
 				.then(shape->assertEquals(3,shape.get(0)))
 				.then(shape->assertEquals(5,shape.get(1)));
 
@@ -89,7 +89,7 @@ public class SimpleClassificationPipelineTest {
 			// add assertions to the pipelline
 			pipelineUnderTest
 				.then(array->assertNotNull(array))
-				.map(NDArray::getShape)
+				.transformOutput(NDArray::getShape)
 				.then(shape->assertEquals(3,shape.get(0)))
 				.then(shape->assertEquals(5,shape.get(1)));
 
