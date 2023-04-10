@@ -43,8 +43,7 @@ public class Pipeline<I, O> extends AbstractPipeline {
 
 	protected Pipeline( Stage<NDArray, O> newStage,NeuronalNetworkPipeline parent) {
 		super();
-		this.initialStage = parent.initialStage;
-		this.firstProducer = parent.firstProducer;
+		clonePrivateState(parent);
 		
 		this.nextStages=new ArrayList<Stage<O, ?>>();
 		
