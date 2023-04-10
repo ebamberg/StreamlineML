@@ -33,16 +33,6 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 		
 		parent.nextStages.add(this.stage);
 	}
-
-	private void clonePrivateState(NeuronalNetworkPipeline parent) {
-		this.initialStage = parent.initialStage;
-		this.firstProducer = parent.firstProducer;
-	}
-
-	private void clonePrivateState(Pipeline<?,?> parent) {
-		this.initialStage = parent.initialStage;
-		this.firstProducer = parent.firstProducer;
-	}
 	
 	protected NeuronalNetworkPipeline( IterableStage<NDArray, Iterator<NDArray>> newStage,NeuronalNetworkPipeline parent) {
 		super();

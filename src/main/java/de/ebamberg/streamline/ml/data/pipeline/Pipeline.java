@@ -58,11 +58,6 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		
 		parent.nextStages.add((Stage<NDArray, ?>)this.stage);
 	}
-	
-	private void clonePrivateState(Pipeline<?, I> parent) {
-		this.initialStage = parent.initialStage;
-		this.firstProducer = parent.firstProducer;
-	}
 
 	protected Pipeline( IterableStage<I, Iterator<O>> newStage,Pipeline<?,I> parent) {
 		super();
