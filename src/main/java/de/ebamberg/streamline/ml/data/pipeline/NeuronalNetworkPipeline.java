@@ -6,32 +6,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ai.djl.ndarray.NDArray;
-import ai.djl.ndarray.NDArrays;
-import ai.djl.ndarray.NDList;
 import de.ebamberg.streamline.ml.activation.Activation;
-import de.ebamberg.streamline.ml.data.Record;
-import de.ebamberg.streamline.ml.data.Schema;
-import de.ebamberg.streamline.ml.data.text.Dictionary;
-import de.ebamberg.streamline.ml.data.text.GenericDictionary;
 import de.ebamberg.streamline.ml.layer.Layer;
 
-public class NeuronalNetworkPipeline {
+public class NeuronalNetworkPipeline extends AbstractPipeline {
 
-	private static final Logger log=LoggerFactory.getLogger("Pipeline");
-	
 	private Stage<NDArray,NDArray> stage;
 	
-	
-	List<Stage<NDArray,?>> nextStages;
-	Stage<Object,?> initialStage;
-	Producer<?> firstProducer;
+	protected List<Stage<NDArray,?>> nextStages;
 	
 	protected NeuronalNetworkPipeline( Stage<NDArray, NDArray> newStage,NeuronalNetworkPipeline parent) {
 		super();
@@ -163,14 +147,7 @@ public class NeuronalNetworkPipeline {
 		return new NeuronalNetworkPipeline(nextStage,this);	
 	}
 
-	
 
-
-	void forward(Object element) {
-		if (initialStage!=null && element!=null) {
-			initialStage.forward(element);
-		}
-	}
 
 	public NeuronalNetworkPipeline execute() {
 		if (firstProducer!=null) {

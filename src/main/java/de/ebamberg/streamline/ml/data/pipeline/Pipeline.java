@@ -9,9 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDArrays;
 import ai.djl.ndarray.NDList;
@@ -21,17 +18,11 @@ import de.ebamberg.streamline.ml.data.text.Dictionary;
 import de.ebamberg.streamline.ml.data.text.GenericDictionary;
 import de.ebamberg.streamline.ml.layer.Layer;
 
-public class Pipeline<I, O>  {
-
-	private static final Logger log=LoggerFactory.getLogger("Pipeline");
+public class Pipeline<I, O> extends AbstractPipeline {
 	
 	private Stage<I,O> stage;
-	
-	
-	// package private !! when need to clone the state in other Pipeline-classes
-	List<Stage<O,?>> nextStages;
-	Stage<Object,?> initialStage;
-	Producer<?> firstProducer;
+		
+	protected List<Stage<O,?>> nextStages;
 	
 	protected Pipeline( Stage<I, O> newStage,Pipeline<?,I> parent) {
 		super();
@@ -276,11 +267,6 @@ public class Pipeline<I, O>  {
 	}
 
 
-	void forward(Object element) {
-		if (initialStage!=null && element!=null) {
-			initialStage.forward(element);
-		}
-	}
 
 	public Pipeline<I,O> execute() {
 		if (firstProducer!=null) {
