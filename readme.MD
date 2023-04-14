@@ -6,7 +6,7 @@ StreamlineML uses an easy to learn and easy to read
 
 # Getting Started
 
-## Data Reading and Trnasformation
+## Data Reading and Transformation
 ### reading data from CSV
 
 ~~~
