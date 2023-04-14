@@ -146,7 +146,7 @@ Test data get pushed through the pipeline and the result get splitted and pushed
 
 ~~~
 
-#Utility Functions
+# Utility Functions
 
 ## Vector Distance and Vector Similarity
 
