@@ -145,3 +145,26 @@ Test data get pushed through the pipeline and the result get splitted and pushed
 	}
 
 ~~~
+
+# Experimental Features - features in development
+
+## high write-throughput persistent key-value Feature Store.
+
+the Feature Store is Map-structure persisting data when a in-memory threshold is reached.
+
+LSM-Tree is used to persist the data which guarantees high write throughput with the cost
+of eventual consistency.
+
+The Feature is under development at the moment.   
+
+~~~
+
+		var table=new SSTable(5);
+		table.put(4711l,"Hello");
+		table.put(56787l,"World");
+	
+		var text=table.get(4711l);
+		assertEquals("Hello",text);
+		
+
+~~~
