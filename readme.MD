@@ -146,6 +146,27 @@ Test data get pushed through the pipeline and the result get splitted and pushed
 
 ~~~
 
+#Utility Functions
+
+## Vector Distance and Vector Similarity
+
+~~~
+
+		try (var manager=NDManager.newBaseManager()) {
+			var vector1=manager.create(new float[][] {{3,4},{7,8}});
+			assertEquals( 0f, VectorDistance.cosineDistance(vector1, vector1) );
+		}
+~~~
+
+~~~
+
+		try (var manager=NDManager.newBaseManager()) {
+			var vector1=manager.create(new float[][] {{3,4},{7,8}});
+			var vector2=manager.create(new float[][] {{1,2},{7,8}});
+			assertEquals( 0.97f, VectorDistance.cosineSimilarity(vector1, vector2),0.01f );
+		}
+~~~
+
 # Experimental Features - features in development
 
 ## high write-throughput persistent key-value Feature Store.
