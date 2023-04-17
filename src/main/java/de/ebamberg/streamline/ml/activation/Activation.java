@@ -7,6 +7,7 @@ public interface Activation extends Layer {
 	public static Activation reLU = new ReLUActivation();
 	public static Activation softMax = new SoftMaxActivation();
 	public static Activation tanh = new TanhActivation();
+	public static Activation sigmoid = new SigmoidActivation();
 
 	
 }

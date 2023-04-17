@@ -38,6 +38,11 @@ public class DenseLayer implements Layer {
 		return input.dot(weights).add(biases);
 	}
 	
+	@Override
+	public NDArray backward(NDArray backward) {
+		throw new UnsupportedOperationException();
+	}	
+	
 	public static DenseLayer ofSize(int numberOfNeurons) {
 		return new DenseLayer(numberOfNeurons);
 	}

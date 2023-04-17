@@ -16,4 +16,9 @@ public class TanhActivation implements Activation {
         return array.getNDArrayInternal().tanh();
     }
 	
+	@Override
+	public NDArray backward(NDArray backward) {
+		throw new UnsupportedOperationException();
+	}	
+    
 }

@@ -15,5 +15,10 @@ public class ReLUActivation implements Activation {
     	// return array.clip(0, Float.MAX_VALUE);
     	// use the engine ( like mxnet or tensorflow) internal function for performance.
         return array.getNDArrayInternal().relu();
-    }	
+    }
+
+	@Override
+	public NDArray backward(NDArray backward) {
+		throw new UnsupportedOperationException();
+	}	
 }

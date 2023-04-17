@@ -17,9 +17,13 @@ public class RNNLayer implements Layer {
 	
 	@Override
 	public NDArray forward(NDArray input) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public NDArray backward(NDArray backward) {
+		throw new UnsupportedOperationException();
+	}	
 
 	/**
 	 * 	//	W_xh = np.random.randn(hidden_size, num_chars)*0.01     # weight input -> hidden. 

@@ -19,5 +19,10 @@ public class SoftMaxActivation implements Activation {
 		var probabilities = expValues.div ( expValues.sum(new int[] {1},true));
 		return probabilities;
 	}
+	
+	@Override
+	public NDArray backward(NDArray backward) {
+		throw new UnsupportedOperationException();
+	}	
 
 }
