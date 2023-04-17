@@ -17,5 +17,10 @@ public interface SSTableStorage extends Comparable<SSTableStorage> {
 	 */
 	String put(Long key, String value);
 
+	/**
+	 * deletes all data hold be this storage
+	 */
+	void drop();
+	
 	int size();
 }

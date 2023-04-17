@@ -1,6 +1,5 @@
 package de.ebamberg.streamline.experimental.lsm;
 
-import java.util.Map;
 import java.util.TreeMap;
 
 public class SSTableInMemoryStorage implements SSTableStorage {
@@ -42,6 +41,11 @@ public class SSTableInMemoryStorage implements SSTableStorage {
 	public int compareTo(SSTableStorage o) {
 		// in memory storage always comes first
 		return -1;
+	}
+
+	@Override
+	public void drop() {
+		store=new TreeMap<>();
 	}
 	
 	

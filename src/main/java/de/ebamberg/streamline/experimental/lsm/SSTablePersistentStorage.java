@@ -2,6 +2,8 @@ package de.ebamberg.streamline.experimental.lsm;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,13 +18,27 @@ public class SSTablePersistentStorage implements SSTableStorage {
 	private static final int INDEX_ENTRYSIZE = 16;
 	
 	private long timestamp;
-	private String filename;
+	Path filename;
 	
-	SSTablePersistentStorage(TreeMap<Long,String> store) throws IOException {
+	SSTablePersistentStorage(String tableName, TreeMap<Long,String> store) throws IOException {
 		timestamp=System.currentTimeMillis();
+		filename=SSTable.databaseFolder.resolve(String.format("part-%s-%d",tableName, timestamp));
 		persist(store);
 	}
 	
+	public SSTablePersistentStorage(Path f) throws IOException {
+		filename=f;
+		try (var file=new RandomAccessFile(filename.toFile(), "r")) {
+			var header=new byte[4];
+			file.read(header);
+			var version=file.readInt();
+			timestamp=file.readLong();
+			var dataChunkStart=file.readLong();
+			var indexChunkStart=file.readLong();
+			var numEntries=file.readInt();
+		}
+	}
+
 	@Override
 	public String get(long key) {
 		return (String)query(key);
@@ -39,8 +55,7 @@ public class SSTablePersistentStorage implements SSTableStorage {
 		var numEntries=passiveStore.size();
 		var index2position=new long[numEntries];
 		
-		filename=String.format("part-%d", timestamp);
-		try (var file=new RandomAccessFile(filename, "rw")) {
+		try (var file=new RandomAccessFile(filename.toFile(), "rw")) {
 			file.writeBytes("SSTA");					// Magic Cookie
 			file.writeInt(1);							// version
 			file.writeLong(timestamp);	// timestamp
@@ -79,7 +94,8 @@ public class SSTablePersistentStorage implements SSTableStorage {
 	
 	private Object query(long queryFor) {
 		Object result=null;
-		try (var file=new RandomAccessFile(filename, "r")) {
+		try (var file=new RandomAccessFile(filename.toFile(), "r")) {
+			//TODO store header in instance variable during inititalization. don't read header all the time
 			var header=new byte[4];
 			file.read(header);
 			var version=file.readInt();
@@ -171,6 +187,16 @@ public class SSTablePersistentStorage implements SSTableStorage {
 		} else {
 			return +1; // persistent storages always comes last
 		}
+	}
+
+	@Override
+	public void drop() {
+		try {
+			Files.deleteIfExists(filename);
+		} catch (IOException e) {
+			log.error("cannot delete database data file {}",filename,e);
+		}
+		
 	}
 
 	

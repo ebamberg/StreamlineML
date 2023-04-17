@@ -1,11 +1,12 @@
 package de.ebamberg.streamline.experimental.lsm;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +17,8 @@ public class SSTable {
 
 	private static Logger log=LoggerFactory.getLogger(SSTable.class);
 
+	private String tableName;
+	
 	private SSTableStorage activeStore;
 	
 	private volatile SortedSet<SSTableStorage> persistedStores;
@@ -24,19 +27,60 @@ public class SSTable {
 	
 	private ExecutorService executor;
 	
-	public SSTable() {
+	public static final Path databaseFolder=Path.of("./db/"); 
+	
+	public SSTable(String tableName) throws IOException {
+		this.tableName=tableName;
 		activeStore=new SSTableInMemoryStorage();
 		persistedStores=new TreeSet<SSTableStorage>();
 		executor=Executors.newFixedThreadPool(1);
+		initializeTableFiles();
 	}
 
-	public SSTable(int maxEntriesInMemory) {
-		activeStore=new SSTableInMemoryStorage();
+	public SSTable(String tableName,int maxEntriesInMemory) throws IOException {
+		this.tableName=tableName;
 		this.maxEntriesInMemory=maxEntriesInMemory;
+		activeStore=new SSTableInMemoryStorage();
 		persistedStores=new TreeSet<SSTableStorage>();
 		executor=Executors.newFixedThreadPool(1);
+		initializeDatabaseFolder();
+		initializeTableFiles();
 	}
 	
+	private void initializeDatabaseFolder() throws IOException {
+		if (!Files.exists(databaseFolder)) {
+			Files.createDirectories(databaseFolder);
+		}
+		
+	}
+
+	//TODO proper error handling for IOExceptions
+	private void initializeTableFiles() throws IOException {		
+		String filePrefix=String.format("part-%s-",tableName);
+		Files.find(databaseFolder, 1, (file,attributes)->file.getFileName().startsWith(filePrefix) )
+			.map(f-> {
+				try {
+					return new SSTablePersistentStorage(f);
+				} catch (IOException e) {
+					log.error("fatal error opening database files",e);
+					
+				}
+				return null;
+			})
+			.filter(Objects::isNull)
+			.forEach(storage->persistedStores.add(storage));
+	}
+	
+	/**
+	 * drop table
+	 * 
+	 * deletes all table data files. The table will be empty afterwards
+	 */
+	public void drop() {
+		log.info("dropping table {}", tableName);
+		persistedStores.forEach(SSTableStorage::drop);
+	}
+
 	/**
 	 * @param key
 	 * @return
@@ -67,7 +111,7 @@ public class SSTable {
 					try {
 						log.info("flush in-memoactiveStorery key-value store to disk");
 						
-						return new SSTablePersistentStorage(((SSTableInMemoryStorage)passiveStore).store);
+						return new SSTablePersistentStorage(tableName,((SSTableInMemoryStorage)passiveStore).store);
 					} catch (IOException e) {
 						log.error("fatal error persisting key value store ",e);
 						throw new RuntimeException("file error while persisting key-value storage. This will cause data lost. ",e);
