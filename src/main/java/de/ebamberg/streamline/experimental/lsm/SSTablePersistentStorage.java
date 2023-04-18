@@ -22,9 +22,11 @@ public class SSTablePersistentStorage implements SSTableStorage {
 	
 	SSTablePersistentStorage(String tableName, TreeMap<Long,String> store) throws IOException {
 		timestamp=System.currentTimeMillis();
+		initializeDatabaseFolder();
 		filename=SSTable.databaseFolder.resolve(String.format("part-%s-%d",tableName, timestamp));
 		persist(store);
 	}
+	
 	
 	public SSTablePersistentStorage(Path f) throws IOException {
 		filename=f;
@@ -39,6 +41,15 @@ public class SSTablePersistentStorage implements SSTableStorage {
 		}
 	}
 
+	
+	private void initializeDatabaseFolder() throws IOException {
+		if (!Files.exists(SSTable.databaseFolder)) {
+			Files.createDirectories(SSTable.databaseFolder);
+		}
+		
+	}
+
+	
 	@Override
 	public String get(long key) {
 		return (String)query(key);

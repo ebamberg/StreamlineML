@@ -27,7 +27,7 @@ public class SSTable {
 	
 	private ExecutorService executor;
 	
-	public static final Path databaseFolder=Path.of("./.db/"); 
+	public static final Path databaseFolder=Path.of(".db/"); 
 	
 	public SSTable(String tableName) throws IOException {
 		this.tableName=tableName;
