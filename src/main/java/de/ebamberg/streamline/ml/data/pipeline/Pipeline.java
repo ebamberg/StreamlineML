@@ -177,6 +177,18 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		return new Pipeline<>(nextStage,this);
 	}
 
+	public <U,K> Pipeline<O,K> predict(String featureName, Predictor<U,K> inferenceFunction) {
+		var nextStage=new Stage<O,K>() {
+			@Override
+			public K forward(O input) {
+				var record=(Record)input;
+				U value=(U)record.getValue(featureName);
+				return inferenceFunction.predict(value);
+			}
+		};
+		
+		return new Pipeline<>(nextStage,this);
+	}
 	
 	public Pipeline<O,O> withFeature(String featureName, Function<Pipeline<?,?>,Pipeline<?,?>> pipelineBuilder) {
 		var nextStage=new Stage<O,O>() {

@@ -126,7 +126,16 @@ TextualDataset reads each line of the input text into a new record with the feat
 			.map(r->(String)r.getValue("lines"))
 			.predict(HuggingFaceCloud.xlmRobertaBase)
 			.log()
-~~~				
+~~~			
+
+or even simplier
+~~~
+		TextualDataset.fromResource("/simpleMaskedSentences.txt")
+			.read()
+			.predict("lines",HuggingFaceCloud.xlmRobertaBase)
+			.log()
+			.execute();
+~~~	
 
 the output of the example will be something like this:
 ```

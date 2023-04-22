@@ -9,9 +9,9 @@ public class SentenceMaskInferWithCloudServiceExample {
 	public static void main(String[] args) {
 		TextualDataset.fromResource("/simpleMaskedSentences.txt")
 			.read()
-			.map(r->(String)r.getValue("lines"))
-			.log()
-			.predict(HuggingFaceCloud.xlmRobertaBase)
+		//	.map(r->(String)r.getValue("lines"))
+		//	.log()
+			.predict("lines",HuggingFaceCloud.xlmRobertaBase)
 			.log()
 			.execute();
 			
