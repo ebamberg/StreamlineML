@@ -20,7 +20,15 @@ A constant API allows to swap cloud service with self implemented and trained ne
 						.read()
 						.log()
 						.execute();
-~~~				
+~~~	
+
+### reading a text file
+~~~
+		TextualDataset.fromResource("/simpleMaskedSentences.txt")
+			.read()
+			.log()
+			.execute();
+~~~						
 
 ### building catalog feature
 
