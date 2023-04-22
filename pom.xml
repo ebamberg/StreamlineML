@@ -14,6 +14,7 @@
 		<opennlp.version>2.1.1</opennlp.version>
 		<slf4j.version>[2.0.7,)</slf4j.version>
         <logback.version>[1.4.6,)</logback.version>
+        <gson.version>2.10.1</gson.version>
 	</properties>
 
 	<dependencies>
@@ -70,6 +71,11 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>[5.4.0,)</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
 		</dependency>
 	</dependencies>
 	

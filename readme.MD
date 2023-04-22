@@ -4,6 +4,11 @@ Machine learning algorithm implemented in easy to understand clean object-orient
 StreamlineML uses an easy to learn and easy to read  
 **FluentAPI** to make dataflow and learning process in **machine-learning** algorithms clear. 
 
+StreamlineML comes with out-of-the-box modules to use **Cloud Machine Learning services** like HuggingFace.
+To start a working machine learning application was never so easy then now. 
+
+A constant API allows to swap cloud service with self implemented and trained neuronal networks at any time.
+
 # Getting Started
 
 ## Data Reading and Transformation
@@ -77,6 +82,62 @@ Alternative we access a specific column using the record object itself which rep
 				.log()
 				.execute();	
 ~~~				
+				
+				
+## Using Machine Learning Cloud Services
+
+StreamlineML comes with out-of-the-box modules to use Cloud Machine Learning service like HuggingFace.
+
+### Hugging Face Module
+
+please set your HuggingFace API key in the environment variable HUGGINGFACE_APIKEY of your OS before using the services.
+
+__https://api-inference.huggingface.co/__ is used as default host for inference but can overridden with a JVM parameter at starttime
+
+please use
+~~~
+ -DHUGGINGFACE_HOST=....
+ ~~
+ to set a different host if required.
+
+The following code sample read line by line the text file and calls the cloud hosted xlm-roberta-base model to find possible matches
+for the <mask> token in each sentence. 
+
+
+input dataset
+
+~~~
+The answer of the universe is <mask>.
+This is not my cup of <mask>.
+~~
+
+TextualDataset reads each line of the input text into a new record with the feature "lines". The input text file is read from the classpath (@see "fromResource()").
+
+|lines                                     |
+|------------------------------------------|
+|The answer of the universe is <mask>.     |
+|This is not my cup of <mask>.             |
+
+
+
+~~~
+		TextualDataset.fromResource("/simpleMaskedSentences.txt")
+			.read()
+			.map(r->(String)r.getValue("lines"))
+			.predict(HuggingFaceCloud.xlmRobertaBase)
+			.log()
+~~~				
+
+the output of the example will be something like this:
+```
+13:24:36.848 [main] INFO Pipeline -- pipeline stage: This is not my cup of <mask>.
+13:24:37.779 [main] INFO Pipeline -- pipeline stage: [TokenPropability [score=0.9401772, token=26156, sequence=This is not my cup of tea.], TokenPropability [score=0.05441865, token=79497, sequence=This is not my cup of coffee.], TokenPropability [score=0.0016887067, token=86963, sequence=This is not my cup of cake.], TokenPropability [score=9.179833E-4, token=41851, sequence=This is not my cup of Tea.], TokenPropability [score=3.8005377E-4, token=135124, sequence=This is not my cup of espresso.]]
+```
+
+As we can clearly see `This is not my cup of tea.` wins this prediction followed by `This is not my cup of coffee.`
+
+
+
 					
 ## Machine learning Layers
 ### simple classification example

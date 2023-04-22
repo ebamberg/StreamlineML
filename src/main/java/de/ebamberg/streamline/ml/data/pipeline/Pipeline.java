@@ -12,6 +12,7 @@ import java.util.stream.StreamSupport;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDArrays;
 import ai.djl.ndarray.NDList;
+import de.ebamberg.streamline.ml.api.Predictor;
 import de.ebamberg.streamline.ml.data.Record;
 import de.ebamberg.streamline.ml.data.Schema;
 import de.ebamberg.streamline.ml.data.text.Dictionary;
@@ -129,7 +130,6 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		return new Pipeline<>(nextStage,this);
 	}
 	
-	
 	public <K> Pipeline<O,K> map(Function<O,K> mapFunction) {
 		var nextStage=new Stage<O,K>() {
 			@Override
@@ -140,6 +140,7 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		
 		return new Pipeline<>(nextStage,this);
 	}
+		
 	
 	public <K> Pipeline<O,K> flatMap(Function<O,Iterator<K>> mapFunction) {
 		var nextStage=new IterableStage<O,Iterator<K>>() {
@@ -165,6 +166,18 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		return new Pipeline<>(nextStage,this);	
 	}
 
+	public <K> Pipeline<O,K> predict(Predictor<O,K> inferenceFunction) {
+		var nextStage=new Stage<O,K>() {
+			@Override
+			public K forward(O input) {
+				return inferenceFunction.predict(input);
+			}
+		};
+		
+		return new Pipeline<>(nextStage,this);
+	}
+
+	
 	public Pipeline<O,O> withFeature(String featureName, Function<Pipeline<?,?>,Pipeline<?,?>> pipelineBuilder) {
 		var nextStage=new Stage<O,O>() {
 			@Override
