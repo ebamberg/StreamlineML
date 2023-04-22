@@ -109,7 +109,7 @@ input dataset
 ~~~
 The answer of the universe is <mask>.
 This is not my cup of <mask>.
-~~
+~~~
 
 TextualDataset reads each line of the input text into a new record with the feature "lines". The input text file is read from the classpath (@see "fromResource()").
 
