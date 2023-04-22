@@ -97,7 +97,7 @@ __https://api-inference.huggingface.co/__ is used as default host for inference 
 please use
 ~~~
  -DHUGGINGFACE_HOST=....
- ~~
+~~~
  to set a different host if required.
 
 The following code sample read line by line the text file and calls the cloud hosted xlm-roberta-base model to find possible matches
