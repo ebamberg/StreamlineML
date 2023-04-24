@@ -18,18 +18,18 @@ public class PredictNextCharacter {
 		var dictionary=CharacterBasedDictionary.fromString(textData);
 		System.out.printf("**** Input Data ****\n\n\tcharacters in input %d\n\tunique characters in string %d\n\n\n", textData.length(), dictionary.size());
 		
-		try (InputEncoder<Character> encoder=OneHotEncoder.fromDictionary(dictionary)) {
-			List<NDArray> onehotencoded=textData
-										.chars()
-										.mapToObj(e->(char)e)
-										.map(encoder::encode)
-										.toList();
-			
-			System.out.println("**** One Hot encoded input data ****");
-			onehotencoded.forEach(arr->System.out.println(Arrays.toString(arr.toFloatArray())));
-			var layer1=new RNNLayer(encoder.getManager(),new Shape(1,dictionary.size()));
-			
-		}
+//		try (InputEncoder<Character> encoder=OneHotEncoder.fromDictionary(dictionary)) {
+//			List<NDArray> onehotencoded=textData
+//										.chars()
+//										.mapToObj(e->(char)e)
+//										.map(encoder::encode)
+//										.toList();
+//			
+//			System.out.println("**** One Hot encoded input data ****");
+//			onehotencoded.forEach(arr->System.out.println(Arrays.toString(arr.toFloatArray())));
+//			var layer1=new RNNLayer(encoder.getManager(),new Shape(1,dictionary.size()));
+//			
+//		}
 	}
 
 }
