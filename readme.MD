@@ -153,7 +153,18 @@ the output of the example will be something like this:
 
 As we can clearly see `This is not my cup of tea.` wins this prediction followed by `This is not my cup of coffee.`
 
+### Vectorize a String using Hugging Face Cloud
 
+~~~
+		import static de.ebamberg.streamline.ml.modules.huggingface.HuggingFaceCloud.*;
+
+		TextualDataset.fromResource("/simpleMaskedSentences.txt")
+			.read()
+			.predict("lines",text2Vec_AllMiniLM2)
+			.log()
+			.execute();
+
+~~~
 
 					
 ## Machine learning Layers

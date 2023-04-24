@@ -27,7 +27,7 @@ public abstract class HuggingFaceCloudAdapter<I,O> implements Predictor<I,O> {
 	private static final int INFERENCE_RETRIES = 3;
 	private static final String HUGGINGFACE_APIKEY = "HUGGINGFACE_APIKEY";
 	private static final String HUGGINGFACE_HOST = "HUGGINGFACE_HOST";
-	private Gson gson;
+	protected Gson gson;
 	private HttpClient client;
 	private URI cachedUri=null;
 	private String apiToken=System.getenv(HUGGINGFACE_APIKEY);

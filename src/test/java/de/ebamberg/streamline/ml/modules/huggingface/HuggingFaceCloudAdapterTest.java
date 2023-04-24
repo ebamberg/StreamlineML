@@ -11,7 +11,7 @@ import de.ebamberg.streamline.ml.modules.huggingface.HuggingFaceCloudAdapter.Mod
 
 public class HuggingFaceCloudAdapterTest {
 
-	// @Test
+	 @Test
 	//TODO this call needs an API TOKEN. So we need to mock the endpoint
 	public void test() throws Exception {
 		var adapter=HuggingFaceCloud.xlmRobertaBase;
