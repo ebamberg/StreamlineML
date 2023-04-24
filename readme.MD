@@ -9,6 +9,26 @@ To start a working machine learning application was never so easy then now.
 
 A constant API allows to swap cloud service with self implemented and trained neuronal networks at any time.
 
+
+- [Getting Started](#getting-started)
+  * [Data Reading and Transformation](#data-reading-and-transformation)
+    + [reading data from CSV](#reading-data-from-csv)
+    + [reading a text file](#reading-a-text-file)
+    + [building catalog feature](#building-catalog-feature)
+  * [dealing with tabular data](#dealing-with-tabular-data)
+  * [Using Machine Learning Cloud Services](#using-machine-learning-cloud-services)
+    + [Hugging Face Module](#hugging-face-module)
+    + [Vectorize a String using Hugging Face Cloud](#vectorize-a-string-using-hugging-face-cloud)
+  * [Machine learning Layers](#machine-learning-layers)
+    + [simple classification example](#simple-classification-example)
+  * [Unit Testing of Pipelines](#unit-testing-of-pipelines)
+- [Utility Functions](#utility-functions)
+  * [Vector Distance and Vector Similarity](#vector-distance-and-vector-similarity)
+- [Experimental Features - features in development](#experimental-features---features-in-development)
+  * [high write-throughput persistent key-value Feature Store.](#high-write-throughput-persistent-key-value-feature-store)
+
+
+
 # Getting Started
 
 ## Data Reading and Transformation
