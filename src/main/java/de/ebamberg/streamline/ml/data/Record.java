@@ -1,5 +1,6 @@
 package de.ebamberg.streamline.ml.data;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -52,15 +53,28 @@ public class Record {
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
 		values.forEach(v-> {	
-								String s;
+								String s=null;
 								if (v!=null) {
-									s=v.toString();
-									s=s.substring(0, Math.min(s.length(), 20));
+									if (v instanceof Object[] ) {
+										Arrays.stream((Object[])v)
+											.map( ae-> {
+												var b=ae.toString();
+												return b.substring(0, Math.min(b.length(), 20));
+											})
+											.forEach(a-> { sb.append(String.format("%20s", a));
+						        		                     sb.append("|");
+						        		                  });
+									} else {
+										s=v.toString();
+										s=s.substring(0, Math.min(s.length(), 20));
+									}
 								} else {
 									s="";
 								}
-								sb.append(String.format("%20s", s));
-								sb.append("|");
+								if (s!=null) {
+									sb.append(String.format("%20s", s));
+									sb.append("|");
+								}
 							});
 		return sb.toString();
 	}

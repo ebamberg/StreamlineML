@@ -156,11 +156,24 @@ TextualDataset reads each line of the input text into a new record with the feat
 			.log()
 ~~~			
 
-or even simplier
+or if we we have tabulatur data like multiple columns/features from a csv file, we can call the prediction for a particular feature/column of this dataset.
+In this case we are calling the xlmRobertaBase on HuggingFace for each value from the column "lines", the result replaces the value in the "line" column
+and keep the other features/columns of the dataset untouched.
+
+Please also notice that though the use of static import from HuggingFaceCloud, the syntax gets even simplier.
+we just say `predict("lines",xlmRobertaBase)`. 
+Let's think of other models like vectorizers in this case we can vectorize the strings in the column "lines with `.predict("lines",text2Vec_AllMiniLM2)`.
+After the call the column "lines" will contains the vectorized String.
+  
 ~~~
+
+import static de.ebamberg.streamline.ml.modules.huggingface.HuggingFaceCloud.*;
+
+...
+
 		TextualDataset.fromResource("/simpleMaskedSentences.txt")
 			.read()
-			.predict("lines",HuggingFaceCloud.xlmRobertaBase)
+			.predict("lines",xlmRobertaBase)
 			.log()
 			.execute();
 ~~~	

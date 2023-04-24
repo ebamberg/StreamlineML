@@ -177,23 +177,25 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		return new Pipeline<>(nextStage,this);
 	}
 
-	public <U,K> Pipeline<O,K> predict(String featureName, Predictor<U,K> inferenceFunction) {
-		var nextStage=new Stage<O,K>() {
+	public <U,K> Pipeline<Record,Record> predict(String featureName, Predictor<U,K> inferenceFunction) {
+		var nextStage=new Stage<Record,Record>() {
 			@Override
-			public K forward(O input) {
+			public Record forward(Record input) {
 				var record=(Record)input;
 				U value=(U)record.getValue(featureName);
-				return inferenceFunction.predict(value);
+				K result= inferenceFunction.predict(value);
+				record.updateValue(featureName, result);
+				return record;
 			}
 		};
 		
-		return new Pipeline<>(nextStage,this);
+		return new Pipeline<Record,Record>(nextStage,(Pipeline<?, Record>) this);
 	}
 	
-	public Pipeline<O,O> withFeature(String featureName, Function<Pipeline<?,?>,Pipeline<?,?>> pipelineBuilder) {
-		var nextStage=new Stage<O,O>() {
+	public Pipeline<Record,Record> withFeature(String featureName, Function<Pipeline<?,?>,Pipeline<?,?>> pipelineBuilder) {
+		var nextStage=new Stage<Record,Record>() {
 			@Override
-			public O forward(O input) {
+			public Record forward(Record input) {
 				var record=(Record)input;
 				Object value=record.getValue(featureName);
 				var featurePipeline=Pipeline.forType(String.class);
@@ -203,7 +205,7 @@ public class Pipeline<I, O> extends AbstractPipeline {
 				return input;
 			}
 		};
-		return new Pipeline<>(nextStage,this);	
+		return new Pipeline<Record,Record>(nextStage,(Pipeline<?, Record>) this);	
 	}
 	
 	public Pipeline<O,O> log(String logPattern, Object...  parameters) {
@@ -321,24 +323,5 @@ public class Pipeline<I, O> extends AbstractPipeline {
 		return new NeuronalNetworkPipeline(nextStage,this);
 	}
 	
-//	public <K> Pipeline<O,K> throughLayer(Layer<O,K> layer) {
-//		var nextStage=new Stage<O,K>() {
-//			@Override
-//			public K forward(O input) {
-//				return layer.forward((O)input);
-//			}
-//		};
-//		return new Pipeline<>(nextStage,this);
-//	}
-//
-//	public <K> Pipeline<O,K> activate(Layer<O,K> layer) {
-//		var nextStage=new Stage<O,K>() {
-//			@Override
-//			public K forward(O input) {
-//				return layer.forward((O)input);
-//			}
-//		};
-//		return new Pipeline<>(nextStage,this);
-//	}
 	
 }
