@@ -5,7 +5,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+       HUGGINGFACE_APIKEY: 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
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
