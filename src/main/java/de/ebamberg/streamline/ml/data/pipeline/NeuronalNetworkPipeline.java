@@ -10,10 +10,13 @@ import java.util.function.Function;
 import ai.djl.ndarray.NDArray;
 import de.ebamberg.streamline.ml.activation.Activation;
 import de.ebamberg.streamline.ml.layer.Layer;
+import de.ebamberg.streamline.ml.loss.LossFunction;
 
 public class NeuronalNetworkPipeline extends AbstractPipeline {
 
 	private Stage<NDArray,NDArray> stage;
+
+	private Consumer<NDArray> backpropagation=null;
 	
 	protected List<Stage<NDArray,?>> nextStages;
 	
@@ -30,6 +33,16 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 				}
 				return output;
 		};
+		
+		if (newStage instanceof TrainableStage) {
+			var backStage=(TrainableStage)newStage;
+			this.backpropagation = input -> {		
+				NDArray backward=backStage.backward(input);
+				if (parent.backpropagation!=null) {
+					parent.backpropagation.accept(backward);
+				}
+			};
+		}
 		
 		parent.nextStages.add(this.stage);
 	}
@@ -156,21 +169,51 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 	
 	
 	public NeuronalNetworkPipeline throughLayer(Layer layer) {
-		var nextStage=new Stage<NDArray,NDArray>() {
+		var nextStage=new TrainableStage() {
 			@Override
 			public NDArray forward(NDArray input) {
 				return layer.forward(input);
+			}
+
+			@Override
+			public NDArray backward(NDArray backInput) {
+				return layer.backward(backInput);
+			}
+		};
+		return new NeuronalNetworkPipeline(nextStage,this);
+	}
+	
+	public NeuronalNetworkPipeline calculateLoss(LossFunction lossFunction) {
+		var nextStage=new Stage<NDArray,NDArray>() {
+			@Override
+			public NDArray forward(NDArray input) {
+				NDArray y_pred=input;
+				// get z-real from forward input namedList
+				NDArray y_real=input;
+				var loss=lossFunction.apply(y_pred,y_real );
+				
+				if (backpropagation!=null) {
+					backpropagation.accept(loss);
+				}
+				
+				return input;
 			}
 		};
 		return new NeuronalNetworkPipeline(nextStage,this);
 	}
 
 	public NeuronalNetworkPipeline activate(Activation layer) {
-		var nextStage=new Stage<NDArray,NDArray>() {
+		var nextStage=new TrainableStage() {
 			@Override
 			public NDArray forward(NDArray input) {
 				return layer.forward(input);
 			}
+			@Override
+			public NDArray backward(NDArray backInput) {
+				return layer.backward(backInput);
+			}
+			
+			
 		};
 		return new NeuronalNetworkPipeline(nextStage,this);
 	}
@@ -197,5 +240,8 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 //		return new Pipeline<>(nextStage,this);
 //	}
 	
+	private abstract class TrainableStage implements Stage <NDArray,NDArray> {
+		public abstract NDArray backward(NDArray backInput);
+	}
 	
 }

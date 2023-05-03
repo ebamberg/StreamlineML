@@ -7,6 +7,7 @@ import ai.djl.ndarray.NDArray;
 import de.ebamberg.streamline.ml.data.pipeline.Pipeline;
 import de.ebamberg.streamline.ml.data.pipeline.Producer.FloatArrayProducer;
 import de.ebamberg.streamline.ml.layer.DenseLayer;
+import static de.ebamberg.streamline.ml.loss.LossFunction.categoricalCrossentropyLoss;
 
 public class SimpleClassification {
 
@@ -23,6 +24,7 @@ public class SimpleClassification {
 			.activate(reLU)
 			.throughLayer(DenseLayer.ofSize(5))
 			.activate(softMax)
+			.calculateLoss(categoricalCrossentropyLoss)
 			.log()
 			.execute();
 //		

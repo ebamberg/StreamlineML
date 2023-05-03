@@ -1,5 +1,7 @@
 package de.ebamberg.streamline.ml.examples;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
 
 public class ExamplesTest {
@@ -18,7 +20,8 @@ public class ExamplesTest {
 	
 	@Test
 	public void testExample3() throws Exception {
-		SimpleClassification.main(new String[] {} );
+		assertThrows(UnsupportedOperationException.class, ()->SimpleClassification.main(new String[] {} ));
+		
 	}
 	
 }

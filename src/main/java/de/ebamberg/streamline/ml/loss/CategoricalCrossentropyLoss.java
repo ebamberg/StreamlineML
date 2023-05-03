@@ -1,11 +1,9 @@
 package de.ebamberg.streamline.ml.loss;
 
-import java.util.function.BiFunction;
-
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.index.NDIndex;
 
-public class CategoricalCrossentropyLoss implements BiFunction<NDArray, NDArray, NDArray>{
+public class CategoricalCrossentropyLoss implements LossFunction{
 
 	public NDArray apply(NDArray y_pred, NDArray y_real) {
 		checkPreconditions(y_pred, y_real);
