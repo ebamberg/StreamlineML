@@ -42,6 +42,27 @@ A constant API allows to swap cloud service with self implemented and trained ne
 						.execute();
 ~~~	
 
+We can also define our our schema giving the name of the columns, the role this column plays in the training/inference process like "Feature" or "Label" or just "ignore" this column and a datatype for this column.
+
+~~~
+		CSVDataset.from("https://raw.githubusercontent.com/jbrownlee/Datasets/master/wheat-seeds.csv")
+		.withFirstRecordHasHeader(false)
+		.withSchema( Schema.of(
+				Feature.of("area",Role.FEATURE,Float.class),
+				Feature.of("perimeter",Role.FEATURE,Float.class),
+				Feature.of("compactness",Role.IGNORE,Float.class),
+				Feature.of("kernel_length",Role.IGNORE,Float.class),
+				Feature.of("kernel_width",Role.IGNORE,Float.class),
+				Feature.of("coefficient_asymmetry",Role.IGNORE,Float.class),
+				Feature.of("kernelgroove_length",Role.IGNORE,Float.class),
+				Feature.of("class",Role.CLASSLABEL,Float.class)
+				
+				) )
+		.read()
+		.log()
+		.execute();
+~~~
+
 ### reading a text file
 ~~~
 		TextualDataset.fromResource("/simpleMaskedSentences.txt")
