@@ -116,6 +116,10 @@ public class Schema {
 		return Collections.unmodifiableList(names);
 	}
 	
+	public List<Feature<?>> getFeaturesByRole(Role role) {
+		return features.values().stream().filter( f-> role.getClass().isAssignableFrom(f.getRole().getClass())).toList();
+		
+	}
 
 	public static Schema of(Feature<?>... features) {
 		Schema schema=new Schema(features);
