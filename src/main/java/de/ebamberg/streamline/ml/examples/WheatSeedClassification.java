@@ -2,6 +2,7 @@ package de.ebamberg.streamline.ml.examples;
 
 import java.net.MalformedURLException;
 
+import de.ebamberg.streamline.ml.activation.Activation;
 import de.ebamberg.streamline.ml.data.Feature;
 import de.ebamberg.streamline.ml.data.Role;
 import de.ebamberg.streamline.ml.data.reader.CSVDataset;
@@ -44,6 +45,7 @@ public class WheatSeedClassification {
 		.read()
 		.log()
 		.throughInputLayer(DenseLayer.ofSize(5), 10)
+		.activate(Activation.sigmoid)
 		.log()
 		.execute();
 		
