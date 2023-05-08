@@ -14,27 +14,33 @@ public class Feature<R> {
 	
 	private R role;
 	
+	private Class<?> datatype;
+	
 	private boolean isCollection;
 	
 	private boolean categorical;
 		
-	public Feature(String name, R role) {
+	public Feature(String name, R role, Class<?> datatype) {
 		super();
-		this.name  = name;
-		this.role	= role;
-		isCollection=false;
-		categorical=false;
+		this.name  		= name;
+		this.role		= role;
+		this.datatype	= datatype;
+		isCollection	= false;
+		categorical		= false;
 	}
 	
 	protected Feature(Feature<R> cloneFrom) {
 		super();
-		this.name  = cloneFrom.name;
-		this.role	= cloneFrom.role;
-		isCollection=cloneFrom.isCollection;
-		categorical=cloneFrom.categorical;
+		this.name  		= cloneFrom.name;
+		this.role		= cloneFrom.role;
+		this.datatype 	= cloneFrom.datatype;
+		isCollection	= cloneFrom.isCollection;
+		categorical		= cloneFrom.categorical;
 	}
 	
-
+	public static <R> Feature<R> of(String name, R role, Class<?> datatype) {
+		return new Feature<R>(name,role,datatype);
+	}
 
 	
 	public String getName() {

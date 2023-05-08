@@ -15,6 +15,7 @@ import ai.djl.ndarray.NDList;
 import de.ebamberg.streamline.ml.api.Predictor;
 import de.ebamberg.streamline.ml.data.Record;
 import de.ebamberg.streamline.ml.data.Schema;
+import de.ebamberg.streamline.ml.data.encoder.GenericDataRecordEncoder;
 import de.ebamberg.streamline.ml.data.text.Dictionary;
 import de.ebamberg.streamline.ml.data.text.GenericDictionary;
 import de.ebamberg.streamline.ml.layer.Layer;
@@ -305,12 +306,17 @@ public class Pipeline<I, O> extends AbstractPipeline {
 	}
 
 	public NeuronalNetworkPipeline throughInputLayer(Layer layer,int batchsize) {
+		var recordEncoder=new GenericDataRecordEncoder();
 		var nextStage=new Stage<O,NDArray>() {
 			private NDList batch=new NDList();
 			@Override
 			public NDArray forward(O input) {
 				//TODO encode input from input-types to NDArray !!!!
-				batch.add((NDArray) input);
+				if (input instanceof Record) {
+					batch.add( recordEncoder.encode( (Record) input ));
+				} else {
+					batch.add((NDArray) input);
+				}
 				if (batch.size()<batchsize) {
 					return null;
 				} else {

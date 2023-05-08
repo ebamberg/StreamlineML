@@ -1,5 +1,6 @@
 package de.ebamberg.streamline.ml.data.reader;
 
+import java.awt.List;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,12 +9,13 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.StreamSupport;
 
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
@@ -27,7 +29,10 @@ public class CSVDataset implements DataReader <Record> {
 	private Supplier<Reader> readerSupplier;
 	private Map<String, Role> featureRoleMap; 
 	private Schema schema;
-	
+	private boolean firstRecordHasHeader=true;
+	private String[] fixedHeader;
+	private char delimiter=',';
+	private Class<?>[] fixedDatatypes;
 	
 	protected CSVDataset(Supplier<Reader> readerSupplier) {
 		super();
@@ -52,20 +57,54 @@ public class CSVDataset implements DataReader <Record> {
 		 featureRoleMap.put(featureLabel,role);
 		 return self();
 	 }
+	 
+	 public CSVDataset withFirstRecordHasHeader(boolean firstRecordHasHeader) {
+		 this.firstRecordHasHeader=firstRecordHasHeader;
+		 return self();
+	 }
+	 
+	 public CSVDataset withHeader(String... header) {
+		 this.fixedHeader=header;
+		 return self();
+	 }
+	 
+	 public CSVDataset withDelimiter(char delimiter) {
+		 this.delimiter=delimiter;
+		 return self();
+	 }
+	 
+		public CSVDataset withDataTypes(Class<?>... datatypes) {
+			this.fixedDatatypes=datatypes;
+			return self();		
+		}
+
 
 	public Iterator<Record> iterator()  {
 	
 		CSVParser parser;
 		try {
 			Reader in = readerSupplier.get();
-			parser = CSVFormat.EXCEL
-					.withFirstRecordAsHeader().
-					parse(in);
+			var format = CSVFormat.EXCEL.withDelimiter(delimiter);
+			if (firstRecordHasHeader) {
+				format=format.withFirstRecordAsHeader();
+			} else {
+				if (schema!=null) {
+					format=format.withHeader(schema.getFeaturesNames().toArray(new String[] {}));
+				} else {
+					format=format.withHeader(fixedHeader);
+				}
+			}
+			parser=format.parse(in);
+			
 			Schema currentSchema;
 			if (this.schema!=null) {
 				currentSchema=schema;
 			} else {
-				currentSchema=new Schema(parser.getHeaderNames());
+				if (fixedDatatypes!=null)  {
+					currentSchema=new Schema(parser.getHeaderNames(),fixedDatatypes);
+				} else {
+					currentSchema=new Schema(parser.getHeaderNames());
+				}
 			}
 			var innerIterator=parser.iterator();
 			return new Iterator<Record>() {
@@ -134,5 +173,9 @@ public class CSVDataset implements DataReader <Record> {
 	public static CSVDataset fromResource(String resourcePath) {
 		return fromURL(CSVDataset.class.getResource(resourcePath));
 	}
+
+
+
+
 	
 }

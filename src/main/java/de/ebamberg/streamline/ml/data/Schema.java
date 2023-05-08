@@ -4,12 +4,15 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public class Schema {
 
@@ -31,14 +34,19 @@ public class Schema {
 		reindex();
 	}
 
-
-
-	public Schema(Set<Feature<?>> features) {
+	public Schema(List<String> names, Class<?>[] fixedDatatypes) {
 		super();
-		this.names=features.stream().map(Feature::getName).toList();
+		this.names=names.stream().sequential().toList();
+		reindex(fixedDatatypes);
+	}
+
+
+	public Schema(Feature<?>[] features) {
+		super();
+		this.names=Arrays.stream(features).map(Feature::getName).toList();
 		this.nameToIndexMap=new HashMap<>();
 		var index=new AtomicInteger();
-		this.features = features.stream()
+		this.features = Arrays.stream(features)
 				.peek( f-> nameToIndexMap.put(f.getName(),index.getAndIncrement()))
 				.collect(toMap(Feature::getName, f->f));
 	}
@@ -55,12 +63,19 @@ public class Schema {
 	}
 	
 
-	private void reindex() {
+	private void reindex( ) {
+		var datatypes= new Class<?>[this.names.size()];
+		Arrays.setAll(datatypes, i-> String.class );
+		reindex(datatypes);
+	}
+
+
+	private void reindex(Class<?>[] fixedDatatypes ) {
 		this.nameToIndexMap=new HashMap<>();
 		var index=new AtomicInteger();
 		this.features = names.stream()
 				.peek( n-> nameToIndexMap.put(n,index.getAndIncrement()))
-				.map( n-> new Feature<>(n, Role.FEATURE ))
+				.map( n-> new Feature<>(n, Role.FEATURE, fixedDatatypes[index.get()-1] ))
 				.collect(toMap(Feature::getName, f->f));
 	}
 	
@@ -97,12 +112,16 @@ public class Schema {
 		names.stream().map(n->features.get(n)).forEach(consumer);
 	}
 
+	public List<String> getFeaturesNames() {
+		return Collections.unmodifiableList(names);
+	}
+	
 
-//	public Schema categorize(String featureName) {
-//		var newSchema= new Schema(this);
-//		var f=newSchema.features.get(featureName);
-//		newSchema.features.put(featureName, f.setCategorize(true) );
-//		return newSchema;
-//	}
+	public static Schema of(Feature<?>... features) {
+		Schema schema=new Schema(features);
+		return schema;
+	}
+
+
 	
 }
