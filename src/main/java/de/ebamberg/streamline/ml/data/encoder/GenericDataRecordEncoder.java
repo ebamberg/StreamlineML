@@ -17,12 +17,12 @@ public class GenericDataRecordEncoder implements Encoder<Record> {
 		int i=0;
 		for (var f : features) {
 			//TODO generic datatype casting 
-			x[i++]=(Float)input.getValue(f);
+			x[i++]=Float.valueOf( (String) input.getValue(f));
 		}
 		i=0;
 		for (var l : labels) {
 			//TODO generic datatype casting 
-			x[i++]=(Float)input.getValue(l);
+			x[i++]=Float.valueOf ( (String) input.getValue(l)) ;
 		}
 
 		return NDManager.newBaseManager().create(x);

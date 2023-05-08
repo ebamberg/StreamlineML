@@ -311,12 +311,16 @@ public class Pipeline<I, O> extends AbstractPipeline {
 			private NDList batch=new NDList();
 			@Override
 			public NDArray forward(O input) {
-				//TODO encode input from input-types to NDArray !!!!
+				
+				NDArray data;
 				if (input instanceof Record) {
-					batch.add( recordEncoder.encode( (Record) input ));
+					data=recordEncoder.encode( (Record) input );
 				} else {
-					batch.add((NDArray) input);
+					data=(NDArray)input;
 				}
+
+				
+				batch.add((NDArray) data);
 				if (batch.size()<batchsize) {
 					return null;
 				} else {

@@ -9,12 +9,14 @@ import java.util.function.Function;
 
 import ai.djl.ndarray.NDArray;
 import de.ebamberg.streamline.ml.activation.Activation;
+import de.ebamberg.streamline.ml.data.Record;
+import de.ebamberg.streamline.ml.data.encoder.GenericDataRecordEncoder;
 import de.ebamberg.streamline.ml.layer.Layer;
 import de.ebamberg.streamline.ml.loss.LossFunction;
 
 public class NeuronalNetworkPipeline extends AbstractPipeline {
 
-	private Stage<NDArray,NDArray> stage;
+	private Stage<?,NDArray> stage;
 
 	private Consumer<NDArray> backpropagation=null;
 	
@@ -27,7 +29,7 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 		this.nextStages=new ArrayList<Stage<NDArray, ?>>();
 		
 		this.stage = input -> { 
-				NDArray output=newStage.forward (input);
+				NDArray output=newStage.forward ((NDArray) input);
 				if (output!=null) {
 					nextStages.forEach(st->st.forward(output));
 				}
@@ -44,7 +46,7 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 			};
 		}
 		
-		parent.nextStages.add(this.stage);
+		parent.nextStages.add((Stage<NDArray, ?>) this.stage);
 	}
 	
 	protected NeuronalNetworkPipeline( IterableStage<NDArray, Iterator<NDArray>> newStage,NeuronalNetworkPipeline parent) {
@@ -54,7 +56,7 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 		this.nextStages=new ArrayList<Stage<NDArray, ?>>();
 		
 		this.stage = input -> { 
-				var iterator=newStage.forward (input);
+				var iterator=newStage.forward ((NDArray) input);
 				iterator.forEachRemaining( singleElement-> {
 					if (singleElement!=null) {
 						nextStages.forEach(st->st.forward(singleElement));
@@ -64,7 +66,7 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 				return null;
 		};
 		
-		parent.nextStages.add(this.stage);
+		parent.nextStages.add((Stage<NDArray, ?>) this.stage);
 	}
 	
 	
@@ -74,8 +76,10 @@ public class NeuronalNetworkPipeline extends AbstractPipeline {
 		
 		this.nextStages=new ArrayList<Stage<NDArray, ?>>();
 		
-		this.stage = input -> { 
-			NDArray output=newStage.forward ((O)input);
+		//FIXME this.stage is a ndArray,NDArray but can be record,ndArray
+		this.stage = input -> {
+			
+			NDArray output=newStage.forward ( (O) input);
 			if (output!=null) {
 				nextStages.forEach(st->st.forward(output));
 			}

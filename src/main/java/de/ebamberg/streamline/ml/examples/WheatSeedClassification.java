@@ -44,6 +44,7 @@ public class WheatSeedClassification {
 		.read()
 		.log()
 		.throughInputLayer(DenseLayer.ofSize(5), 10)
+		.log()
 		.execute();
 		
 	}
