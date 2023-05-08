@@ -4,10 +4,9 @@ import java.net.MalformedURLException;
 
 import de.ebamberg.streamline.ml.data.Feature;
 import de.ebamberg.streamline.ml.data.Role;
-import de.ebamberg.streamline.ml.data.Schema;
 import de.ebamberg.streamline.ml.data.reader.CSVDataset;
 import de.ebamberg.streamline.ml.layer.DenseLayer;
-
+import static de.ebamberg.streamline.ml.data.Feature.*;
 
 /**
  * 
@@ -32,17 +31,16 @@ public class WheatSeedClassification {
 	public static void main(String...args) throws MalformedURLException {
 		CSVDataset.from("https://raw.githubusercontent.com/jbrownlee/Datasets/master/wheat-seeds.csv")
 		.withFirstRecordHasHeader(false)
-		.withSchema( Schema.of(
-				Feature.of("area",Role.FEATURE,Float.class),
-				Feature.of("perimeter",Role.FEATURE,Float.class),
-				Feature.of("compactness",Role.IGNORE,Float.class),
-				Feature.of("kernel_length",Role.IGNORE,Float.class),
-				Feature.of("kernel_width",Role.IGNORE,Float.class),
-				Feature.of("coefficient_asymmetry",Role.IGNORE,Float.class),
-				Feature.of("kernelgroove_length",Role.IGNORE,Float.class),
-				Feature.of("class",Role.CLASSLABEL,Float.class)
-				
-				) )
+		.withSchema( 
+				feature("area",Float.class),
+				feature("perimeter",Float.class),
+				ignore("compactness",Float.class),
+				ignore("kernel_length",Float.class),
+				ignore("kernel_width",Float.class),
+				ignore("coefficient_asymmetry",Float.class),
+				ignore("kernelgroove_length",Float.class),
+				classlabel("class",Float.class)
+				)
 		.read()
 		.log()
 		.throughInputLayer(DenseLayer.ofSize(5), 10)

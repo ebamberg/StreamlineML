@@ -1,6 +1,5 @@
 package de.ebamberg.streamline.ml.data.reader;
 
-import java.awt.List;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,16 +8,15 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
+import de.ebamberg.streamline.ml.data.Feature;
 import de.ebamberg.streamline.ml.data.Record;
 import de.ebamberg.streamline.ml.data.Role;
 import de.ebamberg.streamline.ml.data.Schema;
@@ -49,6 +47,11 @@ public class CSVDataset implements DataReader <Record> {
 
 	 public CSVDataset withSchema (Schema schema) {
 		 this.schema=schema;
+		 return self();
+	 }
+
+	 public CSVDataset withSchema (Feature<?>... features) {
+		 this.schema=Schema.of(features);
 		 return self();
 	 }
 

@@ -63,6 +63,26 @@ We can also define our our schema giving the name of the columns, the role this 
 		.execute();
 ~~~
 
+or even more fluent by using static imports:
+
+~~~
+		CSVDataset.from("https://raw.githubusercontent.com/jbrownlee/Datasets/master/wheat-seeds.csv")
+		.withFirstRecordHasHeader(false)
+		.withSchema( 
+				feature("area",Float.class),
+				feature("perimeter",Float.class),
+				ignore("compactness",Float.class),
+				ignore("kernel_length",Float.class),
+				ignore("kernel_width",Float.class),
+				ignore("coefficient_asymmetry",Float.class),
+				ignore("kernelgroove_length",Float.class),
+				classlabel("class",Float.class)
+				)
+		.read()
+		.log()
+		.execute();
+~~~
+
 ### reading a text file
 ~~~
 		TextualDataset.fromResource("/simpleMaskedSentences.txt")
