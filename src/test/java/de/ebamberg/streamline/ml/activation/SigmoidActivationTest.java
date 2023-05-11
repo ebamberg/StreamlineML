@@ -25,7 +25,7 @@ public class SigmoidActivationTest {
 			assertEquals(0.6125f, output.getFloat(0,0),0.0001 );
 
 			
-			System.out.printf("soft max activation output %s\n",output.toString());
+			System.out.printf("sigmoid activation output %s\n",output.toString());
 
 			
 		}
@@ -51,7 +51,7 @@ public class SigmoidActivationTest {
 			
 
 			
-			System.out.printf("soft max activation output %s\n",backpropagated.toString());
+			System.out.printf("sigmoid activation output %s\n",backpropagated.toString());
 
 			
 		}

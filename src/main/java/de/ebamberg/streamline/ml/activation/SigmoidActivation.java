@@ -11,7 +11,8 @@ public class SigmoidActivation implements Activation {
 	@Override
 	public NDArray forward(NDArray input) {
 		var ones=input.getManager().ones(input.getShape());
-		return ones.divi( ones.add(input.neg().exp()) );
+		var sigmoid= ones.div( ones.add(input.neg().exp()) );
+		return sigmoid;
 	}
 
 	/**

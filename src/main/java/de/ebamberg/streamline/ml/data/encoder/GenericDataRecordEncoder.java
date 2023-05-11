@@ -22,7 +22,7 @@ public class GenericDataRecordEncoder implements Encoder<Record> {
 		i=0;
 		for (var l : labels) {
 			//TODO generic datatype casting 
-			x[i++]=Float.valueOf ( (String) input.getValue(l)) ;
+			y[i++]=Float.valueOf ( (String) input.getValue(l)) ;
 		}
 
 		return NDManager.newBaseManager().create(x);
